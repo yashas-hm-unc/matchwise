@@ -19,3 +19,7 @@ __MACOSX__/
 test*
 
 # Add after this line
+
+# Flutter Specific
+lib/secrets.dart
+lib/firebase_options.dart
