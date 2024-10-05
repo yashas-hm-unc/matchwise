@@ -16,7 +16,6 @@ __MACOSX__/
 *.ipr
 *.iws
 .idea/
-test*
 
 # Add after this line
 # Flutter/Dart/Pub related

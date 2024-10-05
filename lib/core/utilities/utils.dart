@@ -1,18 +1,40 @@
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
-import 'package:matchwise/pages/home.dart';
+import 'package:matchwise/firebase_options.dart';
+
+Future<void> initApp(Ref ref, BuildContext context) async {
+  await initFirebase();
+}
+
+Future<void> initFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  if (kReleaseMode) {
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
+
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+  }
+}
 
 PageRouteBuilder pageRouteBuilder(
-    Widget page,
-    RouteSettings settings,
-    ) =>
+  Widget page,
+) =>
     PageRouteBuilder(
-      settings: settings,
       pageBuilder: (_, __, ___) => page,
       transitionsBuilder: (_, animation, __, child) => FadeTransition(
         opacity:
-        animation.drive(Tween<double>(begin: 0, end: 1).chain(CurveTween(
+            animation.drive(Tween<double>(begin: 0, end: 1).chain(CurveTween(
           curve: Curves.easeInOut,
         ))),
         child: child,
@@ -21,10 +43,30 @@ PageRouteBuilder pageRouteBuilder(
       reverseTransitionDuration: 600.milliseconds,
     );
 
+void navigateTo(
+  BuildContext context,
+  Widget page,
+) =>
+    Navigator.push(
+      context,
+      pageRouteBuilder(page),
+    );
 
-Route<dynamic> routeBuilder(RouteSettings settings) {
-  switch (settings.name) {
-    default:
-      return pageRouteBuilder(const Home(), settings);   
-  }
-}
+void navigateOffAll(
+  BuildContext context,
+  Widget page,
+) =>
+    Navigator.pushAndRemoveUntil(
+      context,
+      pageRouteBuilder(page),
+      (_) => false,
+    );
+
+void navigateOff(
+  BuildContext context,
+  Widget page,
+) =>
+    Navigator.pushReplacement(
+      context,
+      pageRouteBuilder(page),
+    );
