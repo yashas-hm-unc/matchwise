@@ -4,6 +4,8 @@ const String loginRoute = '/login';
 
 const String heroTag = 'singleHero';
 
+const String kEmptyString = '';
+
 const String appName = 'MatchWise';
 
 const String logoAsset = 'assets/images/logo.svg';

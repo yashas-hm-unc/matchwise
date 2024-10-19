@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:matchwise/core/constants/app_colors.dart';
 import 'package:matchwise/core/constants/app_constants.dart';
+import 'package:matchwise/core/utilities/auth_utils.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
 import 'package:resize/resize.dart';
 
@@ -15,6 +16,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,9 +99,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          onTap: (){
-                            print('test');
-                          },
+                          onTap: loading
+                              ? null
+                              : () async {
+                                  setState(() => loading = true);
+                                  await googleSignIn();
+                                  setState(() => loading = false);
+                                },
                           child: Container(
                             width: (context.width * 0.4) / 3,
                             height: 50.sp,
@@ -106,28 +113,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               horizontal: 10.sp,
                               vertical: 5.sp,
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  loginScreenBtnText,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 20.sp,
-                                    fontWeight: FontWeight.w800,
-                                    color: black,
-                                  ),
-                                ),
-                                Gap(10.sp),
-                                SvgPicture.asset(
-                                  googleAsset,
-                                  width: 30.sp,
-                                  height: 30.sp,
-                                  fit: BoxFit.contain,
-                                ),
-                              ],
+                            child: AnimatedSwitcher(
+                              duration: 800.milliseconds,
+                              child: loading
+                                  ? const CircularProgressIndicator(
+                                      key: ValueKey(0),
+                                      valueColor:
+                                          AlwaysStoppedAnimation(carolinaBlue2),
+                                    )
+                                  : Row(
+                                      key: const ValueKey(1),
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          loginScreenBtnText,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 20.sp,
+                                            fontWeight: FontWeight.w800,
+                                            color: black,
+                                          ),
+                                        ),
+                                        Gap(10.sp),
+                                        SvgPicture.asset(
+                                          googleAsset,
+                                          width: 30.sp,
+                                          height: 30.sp,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ],
+                                    ),
                             ),
                           ),
                         ),

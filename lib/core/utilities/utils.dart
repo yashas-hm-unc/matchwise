@@ -14,17 +14,6 @@ Future<void> initFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  if (kReleaseMode) {
-    FlutterError.onError = (errorDetails) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-    };
-
-    PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      return true;
-    };
-  }
 }
 
 PageRouteBuilder pageRouteBuilder(
@@ -70,3 +59,8 @@ void navigateOff(
       context,
       pageRouteBuilder(page),
     );
+
+bool checkEmail(String? email){
+  final RegExp regex = RegExp(r'^[a-z0-9.+]*@cs\.unc\.edu$');  
+  return regex.hasMatch(email??'');
+}
