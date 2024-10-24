@@ -28,6 +28,7 @@ dependencies:
   google_fonts: ^6.2.1
   firebase_crashlytics: ^4.1.3
   google_sign_in: ^6.2.1
+  package_info_plus: ^8.1.0
   
 
 dev_dependencies:
@@ -42,7 +43,5 @@ flutter:
   
   assets:
     - assets/images/
-    - assets/anim/
-    - assets/fonts/
     - assets/images/icons/
 

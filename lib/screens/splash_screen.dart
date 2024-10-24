@@ -9,6 +9,7 @@ import 'package:matchwise/core/constants/app_constants.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
 import 'package:matchwise/core/utilities/utils.dart';
 import 'package:matchwise/providers/common_providers.dart';
+import 'package:matchwise/screens/home_screen.dart';
 import 'package:matchwise/screens/login_screen.dart';
 import 'package:resize/resize.dart';
 
@@ -58,7 +59,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       if (e.isCompleted) {
         Future.delayed(
           500.milliseconds,
-          () => mounted ? navigateOffAll(context, const LoginScreen()) : null,
+          // () => mounted ? navigateOffAll(context, const LoginScreen()) : null,
+          () => mounted ? navigateOffAll(context, const HomeScreen()) : null,
         );
       }
     });

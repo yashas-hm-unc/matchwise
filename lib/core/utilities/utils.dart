@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -5,9 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
 import 'package:matchwise/firebase_options.dart';
+import 'package:matchwise/providers/common_providers.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 Future<void> initApp(Ref ref, BuildContext context) async {
   await initFirebase();
+  await setAppVersion(ref);
+}
+
+Future<void> setAppVersion(Ref ref) async{
+  final platform = await PackageInfo.fromPlatform();
+  ref.read(versionProvider.notifier).update((_)=>'v${platform.version}');
 }
 
 Future<void> initFirebase() async {
