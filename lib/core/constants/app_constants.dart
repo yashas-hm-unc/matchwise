@@ -48,13 +48,11 @@ final List<String> adminNavIcons = [
   timelineAsset,
 ];
 
-const facultyDashboardIndex = 0;
-
-const facultyDatesIndex = 1;
-
-const facultyEditPrefIndex = 2;
-
-const facultyAddQuesIndex = 3;
+final List<String> settingsPopup = [
+  'Settings',
+  'Profile',
+  'Logout',
+];
 
 
 const String logoAsset = 'assets/images/logo.svg';
@@ -78,7 +76,6 @@ const String timelineAsset = 'assets/images/timeline.svg';
 const String addFacultyAsset = 'assets/images/add_faculty.svg';
 
 const String backAsset = 'assets/images/icons/back.svg';
-
 
 const loginScreenText =
     'Please sign in using your\n<onyen>@cs.unc.edu\nemail address.';

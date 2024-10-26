@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
@@ -15,9 +11,9 @@ Future<void> initApp(Ref ref, BuildContext context) async {
   await setAppVersion(ref);
 }
 
-Future<void> setAppVersion(Ref ref) async{
+Future<void> setAppVersion(Ref ref) async {
   final platform = await PackageInfo.fromPlatform();
-  ref.read(versionProvider.notifier).update((_)=>'v${platform.version}');
+  ref.read(versionProvider.notifier).update((_) => 'v${platform.version}');
 }
 
 Future<void> initFirebase() async {
@@ -70,7 +66,7 @@ void navigateOff(
       pageRouteBuilder(page),
     );
 
-bool checkEmail(String? email){
-  final RegExp regex = RegExp(r'^[a-z0-9.+]*@cs\.unc\.edu$');  
-  return regex.hasMatch(email??'');
+bool checkEmail(String? email) {
+  final RegExp regex = RegExp(r'^[a-z0-9.+]*@cs\.unc\.edu$');
+  return regex.hasMatch(email ?? '');
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:matchwise/core/constants/app_colors.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
 import 'package:matchwise/widgets/nav_column.dart';
-import 'package:resize/resize.dart';
+import 'package:matchwise/widgets/profile_clickable_icons.dart';
 
 class ScreenBaseTemplate extends StatelessWidget {
   const ScreenBaseTemplate({
@@ -30,18 +29,10 @@ class ScreenBaseTemplate extends StatelessWidget {
               ],
             ),
           ),
-          Align(
+          const Align(
             alignment: Alignment.topRight,
-            child: Container(
-              height: context.width / 30,
-              width: context.width / 30,
-              margin: EdgeInsets.all(15.sp),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: carolinaBlue,
-              ),
-            ),
-          )
+            child: ProfileClickableIcon(),
+          ),
         ],
       ),
     );

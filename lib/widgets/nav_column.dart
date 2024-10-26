@@ -23,6 +23,12 @@ class _NavigationColumnState extends ConsumerState<NavigationColumn>
   late final AnimationController animationController;
 
   @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+  
+  @override
   void initState() {
     animationController = AnimationController(
       vsync: this,
@@ -283,12 +289,18 @@ class NavItem extends ConsumerWidget {
                         ),
                       ),
                       Gap(15.sp),
-                      Text(
-                        itemName,
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w500,
-                          color: white,
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            itemName,
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w500,
+                              color: white,
+                            ),
+                            overflow: TextOverflow.clip,
+                          ),
                         ),
                       ),
                     ],
