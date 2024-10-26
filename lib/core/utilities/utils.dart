@@ -81,10 +81,13 @@ PageRouteBuilder pageRouteBuilder(
     PageRouteBuilder(
       pageBuilder: (_, __, ___) => page,
       transitionsBuilder: (_, animation, __, child) => FadeTransition(
-        opacity:
-            animation.drive(Tween<double>(begin: 0, end: 1).chain(CurveTween(
-          curve: Curves.easeInOut,
-        ))),
+        opacity: animation.drive(
+          Tween<double>(begin: 0, end: 1).chain(
+            CurveTween(
+              curve: Curves.easeInOut,
+            ),
+          ),
+        ),
         child: child,
       ),
       transitionDuration: 600.milliseconds,

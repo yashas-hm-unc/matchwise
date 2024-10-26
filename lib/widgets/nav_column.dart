@@ -27,7 +27,7 @@ class _NavigationColumnState extends ConsumerState<NavigationColumn>
     animationController.dispose();
     super.dispose();
   }
-  
+
   @override
   void initState() {
     animationController = AnimationController(
@@ -45,16 +45,16 @@ class _NavigationColumnState extends ConsumerState<NavigationColumn>
     final collapsed = ref.watch(collapsedProvider);
 
     return AnimatedContainer(
-      padding: EdgeInsets.all(collapsed ? 10.sp : 15.sp),
       duration: 500.milliseconds,
       height: context.height,
       width: collapsed ? context.width / 20 : context.width / 5,
-      color: carolinaBlue.withOpacity(0.4),
+      color: carolinaBlue.withOpacity(0.2),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
           Container(
+            padding: EdgeInsets.all(collapsed ? 10.sp : 15.sp),
             alignment: Alignment.centerRight,
             child: InkWell(
               splashColor: carolinaBlue.withOpacity(0.6),
@@ -69,8 +69,8 @@ class _NavigationColumnState extends ConsumerState<NavigationColumn>
                 ref.read(collapsedProvider.notifier).update((_) => !collapsed);
               }),
               child: Container(
-                width: context.width / 30,
-                height: context.width / 30,
+                width: context.width / 35,
+                height: context.width / 35,
                 padding: EdgeInsets.all(10.sp),
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
@@ -86,7 +86,7 @@ class _NavigationColumnState extends ConsumerState<NavigationColumn>
                     backAsset,
                     fit: BoxFit.contain,
                     colorFilter: const ColorFilter.mode(
-                      white,
+                      black,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -96,25 +96,27 @@ class _NavigationColumnState extends ConsumerState<NavigationColumn>
           ),
           Gap(context.width / 10),
           Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: navItems(user),
+            child: Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: collapsed ? 10.sp : 15.sp),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: navItems(user),
+              ),
             ),
           ),
           Container(
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: white,
-                  width: 2.sp,
+                  color: black,
+                  width: 1.sp,
                 ),
               ),
             ),
-            padding: EdgeInsets.only(
-              top: 15.sp,
-            ),
+            padding: EdgeInsets.all(collapsed ? 10.sp : 15.sp),
             alignment: Alignment.center,
             child: RichText(
               text: TextSpan(
@@ -123,15 +125,15 @@ class _NavigationColumnState extends ConsumerState<NavigationColumn>
                     TextSpan(
                       text: appName,
                       style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: white,
+                        fontWeight: FontWeight.w500,
+                        color: black,
                         fontSize: 23.sp,
                       ),
                     ),
                   TextSpan(
                     text: ' ${ref.read(versionProvider)}',
                     style: TextStyle(
-                      color: white,
+                      color: black,
                       fontWeight: FontWeight.w300,
                       fontSize: 20.sp,
                     ),
@@ -246,8 +248,8 @@ class NavItem extends ConsumerWidget {
                     icon,
                     fit: BoxFit.contain,
                     height: (context.width / 20) / 3,
-                    colorFilter: const ColorFilter.mode(
-                      white,
+                    colorFilter: ColorFilter.mode(
+                      selectedIndex == index ? white : black,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -283,8 +285,8 @@ class NavItem extends ConsumerWidget {
                         icon,
                         height: (context.width / 20) / 3,
                         fit: BoxFit.contain,
-                        colorFilter: const ColorFilter.mode(
-                          white,
+                        colorFilter: ColorFilter.mode(
+                          selectedIndex == index ? white : black,
                           BlendMode.srcIn,
                         ),
                       ),
@@ -297,7 +299,7 @@ class NavItem extends ConsumerWidget {
                             style: TextStyle(
                               fontSize: 20.sp,
                               fontWeight: FontWeight.w500,
-                              color: white,
+                              color: selectedIndex == index ? white : black,
                             ),
                             overflow: TextOverflow.clip,
                           ),

@@ -4,7 +4,6 @@ import 'package:matchwise/core/utilities/extensions.dart';
 import 'package:matchwise/core/utilities/utils.dart';
 import 'package:matchwise/providers/ui_provider.dart';
 import 'package:matchwise/providers/user_provider.dart';
-import 'package:matchwise/widgets/screen_base_template.dart';
 
 import '../widgets/nav_column.dart';
 import '../widgets/profile_clickable_icons.dart';
@@ -26,12 +25,17 @@ class HomeScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const NavigationColumn(),
-                Consumer(
-                  builder: (ctx, ref, _) {
-                    final index = ref.watch(navIndexProvider);
-                    final user = ref.read(userProvider);
-                    return buildScreen(index, user);
-                  },
+                Expanded(
+                  child: Consumer(
+                    builder: (ctx, ref, _) {
+                      final index = ref.watch(navIndexProvider);
+                      final user = ref.read(userProvider);
+                      return AnimatedSwitcher(
+                        duration: 500.milliseconds,
+                        child: buildScreen(index, user),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
