@@ -68,7 +68,7 @@ class AdminDashboard extends StatelessWidget {
   Widget optionButton(BuildContext ctx, VoidCallback onTap, String text) {
     return Material(
       borderRadius: BorderRadius.circular(15.sp),
-      color: carolinaBlue2.withOpacity(0.1),
+      color: carolinaBlue.withOpacity(0.1),
       child: InkWell(
         onTap: onTap,
         splashColor: carolinaBlue,

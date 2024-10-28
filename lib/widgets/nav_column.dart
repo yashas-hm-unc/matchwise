@@ -57,8 +57,8 @@ class _NavigationColumnState extends ConsumerState<NavigationColumn>
             padding: EdgeInsets.all(collapsed ? 10.sp : 15.sp),
             alignment: Alignment.centerRight,
             child: InkWell(
-              splashColor: carolinaBlue.withOpacity(0.6),
-              highlightColor: carolinaBlue.withOpacity(0.6),
+              splashColor: carolinaBlue,
+              highlightColor: carolinaBlue,
               customBorder: const CircleBorder(),
               onTap: () => setState(() {
                 if (!collapsed) {
@@ -224,14 +224,12 @@ class NavItem extends ConsumerWidget {
       child: collapsed
           ? Material(
               key: const Key('1'),
-              color: selectedIndex == index
-                  ? carolinaBlue.withOpacity(0.6)
-                  : Colors.transparent,
+              color: selectedIndex == index ? carolinaBlue : Colors.transparent,
               borderRadius: BorderRadius.circular(200.sp),
               child: InkWell(
                 borderRadius: BorderRadius.circular(200.sp),
-                highlightColor: carolinaBlue.withOpacity(0.6),
-                splashColor: carolinaBlue.withOpacity(0.6),
+                highlightColor: carolinaBlue,
+                splashColor: carolinaBlue,
                 onTap: selectedIndex == index
                     ? () {}
                     : () => ref
@@ -259,12 +257,10 @@ class NavItem extends ConsumerWidget {
           : Material(
               key: const Key('2'),
               borderRadius: BorderRadius.circular(10.sp),
-              color: selectedIndex == index
-                  ? carolinaBlue.withOpacity(0.6)
-                  : Colors.transparent,
+              color: selectedIndex == index ? carolinaBlue : Colors.transparent,
               child: InkWell(
-                highlightColor: carolinaBlue.withOpacity(0.6),
-                splashColor: carolinaBlue.withOpacity(0.6),
+                highlightColor: carolinaBlue,
+                splashColor: carolinaBlue,
                 onTap: selectedIndex == index
                     ? () {}
                     : () => ref

@@ -10,7 +10,6 @@ import 'package:matchwise/core/utilities/extensions.dart';
 import 'package:matchwise/core/utilities/utils.dart';
 import 'package:matchwise/providers/common_providers.dart';
 import 'package:matchwise/screens/home_screen.dart';
-import 'package:matchwise/screens/login_screen.dart';
 import 'package:resize/resize.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -138,7 +137,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             loading: () => const Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation(
-                  carolinaBlue2,
+                  carolinaBlue,
                 ),
               ),
             ),

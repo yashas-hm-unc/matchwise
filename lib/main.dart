@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:matchwise/core/constants/app_theme.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
-import 'package:matchwise/core/utilities/utils.dart';
 import 'package:matchwise/screens/splash_screen.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:resize/resize.dart';
@@ -13,7 +12,6 @@ void main() {
   usePathUrlStrategy();
   runApp(const ProviderScope(child: MatchWise()));
 }
-
 
 class MatchWise extends ConsumerWidget {
   const MatchWise({super.key});
@@ -33,7 +31,7 @@ class MatchWise extends ConsumerWidget {
         child: MaterialApp(
           theme: lightTheme(context),
           debugShowCheckedModeBanner: false,
-          title: 'Yashas H Majmudar',
+          title: 'MatchWise',
           home: const SplashScreen(),
         ),
       ),

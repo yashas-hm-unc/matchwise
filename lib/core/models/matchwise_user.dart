@@ -16,7 +16,7 @@ class MatchWiseUser {
   String id;
 
   String firstName;
-  
+
   String lastName;
 
   String pid;
@@ -24,7 +24,7 @@ class MatchWiseUser {
   String email;
 
   UserType type;
-  
+
   MatchWiseUser({
     required this.id,
     required this.firstName,
@@ -43,5 +43,16 @@ class MatchWiseUser {
       'email': email,
       'type': type,
     };
+  }
+
+  factory MatchWiseUser.fromMap(Map<String, dynamic> map) {
+    return MatchWiseUser(
+      id: map['id'] as String,
+      firstName: map['firstName'] as String,
+      lastName: map['lastName'] as String,
+      pid: map['pid'] as String,
+      email: map['email'] as String,
+      type: map['type'] as UserType,
+    );
   }
 }

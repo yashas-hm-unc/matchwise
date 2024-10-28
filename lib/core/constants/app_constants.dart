@@ -37,7 +37,7 @@ final List<String> studentNavIcons = [
 final List<String> adminNavigation = [
   'Dashboard',
   'Switch Students',
-  'Add Faculty',
+  'Modify Faculty Users',
   'Set Important Dates',
 ];
 
@@ -53,7 +53,6 @@ final List<String> settingsPopup = [
   'Profile',
   'Logout',
 ];
-
 
 const String logoAsset = 'assets/images/logo.svg';
 

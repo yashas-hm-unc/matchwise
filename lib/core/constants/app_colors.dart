@@ -2,7 +2,7 @@ import 'dart:ui';
 
 const Color carolinaBlue = Color(0xff4B9CD3);
 
-const Color carolinaBlue2 = Color(0xff7BAFD4);
+const Color carolinaBlueLight = Color(0xffb8dff8);
 
 const Color navy = Color(0xff13294B);
 

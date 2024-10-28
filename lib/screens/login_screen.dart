@@ -119,7 +119,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   ? const CircularProgressIndicator(
                                       key: ValueKey(0),
                                       valueColor:
-                                          AlwaysStoppedAnimation(carolinaBlue2),
+                                          AlwaysStoppedAnimation(carolinaBlue),
                                     )
                                   : Row(
                                       key: const ValueKey(1),
