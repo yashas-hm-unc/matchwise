@@ -12,4 +12,25 @@ final StateNotifierProvider<FacultyNotifier, List<FacultyUser>>
 
 class FacultyNotifier extends StateNotifier<List<FacultyUser>> {
   FacultyNotifier(super.state);
+  
+  Future<void> addToList(FacultyUser user) async{
+    //TODO: Add to firestore
+    state.add(user);
+    state.sort((ob1, ob2)=>ob1.firstName.compareTo(ob2.firstName));
+    state = [...state];
+  }
+  
+  Future<void> updateList(FacultyUser user) async {
+    //TODO: Update on firestore
+    state.removeWhere((obj)=>obj.id==user.id);
+    state.add(user);
+    state.sort((ob1, ob2)=>ob1.firstName.compareTo(ob2.firstName));
+    state = [...state];
+  }
+  
+  Future<void> removeFromList(FacultyUser user) async {
+    state.removeWhere((obj)=>obj.id==user.id);
+    state = [...state];
+    //TODO: Remove from firestore
+  }
 }

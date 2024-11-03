@@ -39,4 +39,12 @@ class FacultyUser extends MatchWiseUser {
         positionsOpen: json['positionsOpen'] as int,
         researchInterests: json['researchInterests'].map((e) => e.toString()),
       );
+
+  factory FacultyUser.empty() => FacultyUser(
+        id: '',
+        firstName: '',
+        lastName: '',
+        pid: '',
+        email: '',
+      );
 }

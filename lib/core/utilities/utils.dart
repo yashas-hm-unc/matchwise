@@ -1,6 +1,11 @@
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:matchwise/core/models/api_response.dart';
+import 'package:matchwise/core/models/faculty_user.dart';
 import 'package:matchwise/core/models/matchwise_user.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
 import 'package:matchwise/firebase_options.dart';
@@ -32,6 +37,35 @@ Future<void> initFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+}
+
+Future<ApiResponse> autofillFacultyForm(String pid) async {
+  try {
+    final dio = Dio();
+    final url = 'https://dir.unc.edu/api/search/$pid';
+
+    final response = await dio.get(url);
+    final data = response.data[0];
+    return ApiResponse(
+      success: true,
+      args: {
+        'faculty': FacultyUser(
+          id: '',
+          pid: pid,
+          firstName: data['givenNameIterator'][0],
+          lastName: data['snIterator'][0],
+          email: data['mailIterator'][0].toString().replaceAll(
+                'unc.edu',
+                'cs.unc.edu',
+              ),
+        )
+      },
+    );
+  } catch (e) {
+    log('Error @ Auto Fetch $e');
+  }
+
+  return const ApiResponse();
 }
 
 Widget buildScreen(int index, MatchWiseUser user) {
@@ -121,8 +155,3 @@ void navigateOff(
       context,
       pageRouteBuilder(page),
     );
-
-bool checkEmail(String? email) {
-  final RegExp regex = RegExp(r'^[a-z0-9.+]*@cs\.unc\.edu$');
-  return regex.hasMatch(email ?? '');
-}

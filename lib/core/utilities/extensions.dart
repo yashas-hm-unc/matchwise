@@ -13,6 +13,10 @@ extension NumUtils on num {
   Duration get seconds => Duration(milliseconds: (this * 1000).round());
 }
 
+extension StringUtils on String {
+  bool get isEmail => RegExp(r'^[a-z0-9.+]*@cs\.unc\.edu$').hasMatch(this);
+}
+
 extension ContextUtils on BuildContext {
   bool get isMobile => height > width;
 

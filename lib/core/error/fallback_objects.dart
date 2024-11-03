@@ -1,4 +1,5 @@
 import 'package:matchwise/core/models/faculty_user.dart';
+import 'package:matchwise/core/models/important_date.dart';
 
 final List<FacultyUser> facultyFallback = [
   FacultyUser(
@@ -121,5 +122,44 @@ final List<FacultyUser> facultyFallback = [
       'Privacy',
     ],
     positionsOpen: 2,
+  ),
+];
+
+final List<ImportantDate> importantDatesFallback = [
+  ImportantDate(
+    id: 'positions',
+    title: 'Positions open broadcast deadline',
+    date: DateTime(2025, 7, 20, 23, 59, 59),
+    requiredDate: true,
+  ),
+  ImportantDate(
+    id: 'question_deadline',
+    requiredDate: true,
+    title: 'Faculty questionnaire addition deadline',
+    date: DateTime(2025, 7, 27, 23, 59, 59),
+  ),
+  ImportantDate(
+    id: 'form_deadline',
+    requiredDate: true,
+    title: 'Student form filling deadline',
+    date: DateTime(2025, 8, 3, 23, 59, 59),
+  ),
+  ImportantDate(
+    id: 'sorting_deadline',
+    requiredDate: true,
+    title: 'Faculty student shortlisting deadline',
+    date: DateTime(2025, 8, 10, 23, 59, 59),
+  ),
+  ImportantDate(
+    id: 'interview_deadline',
+    requiredDate: true,
+    title: 'Student interviews and selection deadline',
+    date: DateTime(2025, 8, 17, 23, 59, 59),
+  ),
+  ImportantDate(
+    id: 'final_decision',
+    requiredDate: true,
+    title: 'Final Decisions',
+    date: DateTime(2025, 8, 24, 23, 59, 59),
   ),
 ];
