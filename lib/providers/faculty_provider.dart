@@ -22,14 +22,14 @@ class FacultyNotifier extends StateNotifier<List<FacultyUser>> {
   
   Future<void> updateList(FacultyUser user) async {
     //TODO: Update on firestore
-    state.removeWhere((obj)=>obj.id==user.id);
+    state.removeWhere((obj)=>obj.onyen==user.onyen);
     state.add(user);
     state.sort((ob1, ob2)=>ob1.firstName.compareTo(ob2.firstName));
     state = [...state];
   }
   
   Future<void> removeFromList(FacultyUser user) async {
-    state.removeWhere((obj)=>obj.id==user.id);
+    state.removeWhere((obj)=>obj.onyen==user.onyen);
     state = [...state];
     //TODO: Remove from firestore
   }

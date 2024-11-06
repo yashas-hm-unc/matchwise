@@ -5,46 +5,48 @@ class FacultyUser extends MatchWiseUser {
 
   List<String> researchInterests = [];
 
+  List<String> courses = [];
+
   FacultyUser({
-    required super.id,
     required super.firstName,
     required super.lastName,
-    required super.pid,
+    required super.onyen,
     required super.email,
     super.type = UserType.faculty,
     this.positionsOpen = 0,
     List<String>? researchInterests,
+    List<String>? courses,
   }) {
+    this.courses = courses ?? [];
     this.researchInterests = researchInterests ?? [];
   }
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
         'firstName': firstName,
         'lastName': lastName,
-        'PID': pid,
+        'onyen': onyen,
         'email': email,
         'type': type,
         'positionsOpen': positionsOpen,
         'researchInterests': researchInterests,
+        'courses': courses,
       };
 
   factory FacultyUser.fromMap(Map<String, dynamic> json) => FacultyUser(
-        id: json['id'] as String,
         firstName: json['firstName'] as String,
         lastName: json['lastName'] as String,
-        pid: json['PID'] as String,
+        onyen: json['onyen'] as String,
         email: json['email'] as String,
         positionsOpen: json['positionsOpen'] as int,
         researchInterests: json['researchInterests'].map((e) => e.toString()),
+        courses: json['courses'].map((e) => e.toString()),
       );
 
   factory FacultyUser.empty() => FacultyUser(
-        id: '',
         firstName: '',
         lastName: '',
-        pid: '',
+        onyen: '',
         email: '',
       );
 }

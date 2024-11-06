@@ -11,7 +11,7 @@ class AdminDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topLeft,
-      margin: EdgeInsets.all(50.sp),
+      margin: EdgeInsets.all(30.sp),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

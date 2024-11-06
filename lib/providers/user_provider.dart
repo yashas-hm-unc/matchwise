@@ -6,10 +6,9 @@ final StateNotifierProvider<UserNotifier, MatchWiseUser> userProvider =
     StateNotifierProvider(
   (ref) => UserNotifier(
     MatchWiseUser(
-      id: kEmptyString,
       firstName: kEmptyString,
       lastName: kEmptyString,
-      pid: kEmptyString,
+      onyen: kEmptyString,
       email: kEmptyString,
       type: UserType.admin,
     ),

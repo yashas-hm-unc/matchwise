@@ -1,21 +1,29 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchwise/core/models/faculty_user.dart';
 import 'package:matchwise/core/models/important_date.dart';
+import 'package:matchwise/core/models/student_user.dart';
+import 'package:matchwise/providers/match_provider.dart';
 
 final List<FacultyUser> facultyFallback = [
   FacultyUser(
-    id: '1',
     firstName: 'John',
     lastName: 'Doe',
-    pid: '123456789',
+    onyen: 'jdoe',
     email: 'john.doe@cs.unc.edu',
-    researchInterests: ['Machine Learning', 'Natural Language Processing'],
+    researchInterests: [
+      'Machine Learning',
+      'Natural Language Processing',
+    ],
     positionsOpen: 3,
+    courses: [
+      'COMP 521',
+      'COMP 522',
+    ],
   ),
   FacultyUser(
-    id: '2',
     firstName: 'Alice',
     lastName: 'Smith',
-    pid: '234567891',
+    onyen: 'asmith',
     email: 'alice.smith@cs.unc.edu',
     researchInterests: [
       'Computer Vision',
@@ -23,12 +31,16 @@ final List<FacultyUser> facultyFallback = [
       'Embedded Systems',
     ],
     positionsOpen: 1,
+    courses: [
+      'COMP 523',
+      'COMP 524',
+      'COMP 550',
+    ],
   ),
   FacultyUser(
-    id: '3',
     firstName: 'Michael',
     lastName: 'Johnson',
-    pid: '345678912',
+    onyen: 'mjohnson',
     email: 'michael.johnson@cs.unc.edu',
     researchInterests: [
       'Data Mining',
@@ -36,23 +48,29 @@ final List<FacultyUser> facultyFallback = [
       'Cybersecurity',
     ],
     positionsOpen: 4,
+    courses: [
+      'COMP 530',
+      'COMP 540',
+    ],
   ),
   FacultyUser(
-    id: '4',
     firstName: 'Emily',
     lastName: 'Brown',
-    pid: '456789123',
+    onyen: 'ebrown',
     email: 'emily.brown@cs.unc.edu',
     researchInterests: [
       'Bioinformatics',
     ],
     positionsOpen: 2,
+    courses: [
+      'COMP 550',
+      'COMP 580',
+    ],
   ),
   FacultyUser(
-    id: '5',
     firstName: 'David',
     lastName: 'Williams',
-    pid: '567891234',
+    onyen: 'dwilliams',
     email: 'david.williams@cs.unc.edu',
     researchInterests: [
       'Artificial Intelligence',
@@ -60,24 +78,31 @@ final List<FacultyUser> facultyFallback = [
       'Algorithm Design',
     ],
     positionsOpen: 3,
+    courses: [
+      'COMP 590',
+      'COMP 580',
+      'COMP 575',
+    ],
   ),
   FacultyUser(
-    id: '6',
     firstName: 'Jessica',
     lastName: 'Taylor',
-    pid: '678912345',
+    onyen: 'jtaylor',
     email: 'jessica.taylor@cs.unc.edu',
     researchInterests: [
       'Quantum Computing',
       'Computational Biology',
     ],
     positionsOpen: 1,
+    courses: [
+      'COMP 550',
+      'COMP 575',
+    ],
   ),
   FacultyUser(
-    id: '7',
     firstName: 'Chris',
     lastName: 'Miller',
-    pid: '789123456',
+    onyen: 'cmiller',
     email: 'chris.miller@cs.unc.edu',
     researchInterests: [
       'Augmented Reality',
@@ -85,36 +110,45 @@ final List<FacultyUser> facultyFallback = [
       'Computer Graphics',
     ],
     positionsOpen: 4,
+    courses: [
+      'COMP 580',
+      'COMP 590',
+    ],
   ),
   FacultyUser(
-    id: '8',
     firstName: 'Sarah',
     lastName: 'Davis',
-    pid: '891234567',
+    onyen: 'sdavis',
     email: 'sarah.davis@cs.unc.edu',
     researchInterests: [
       'Distributed Systems',
       'Blockchain',
     ],
     positionsOpen: 2,
+    courses: [
+      'COMP 521',
+      'COMP 522',
+    ],
   ),
   FacultyUser(
-    id: '9',
     firstName: 'Daniel',
     lastName: 'Wilson',
-    pid: '912345678',
+    onyen: 'dwilson',
     email: 'daniel.wilson@cs.unc.edu',
     researchInterests: [
       'Cloud Computing',
       'Data Science',
     ],
     positionsOpen: 3,
+    courses: [
+      'COMP 550',
+      'COMP 540',
+    ],
   ),
   FacultyUser(
-    id: '10',
     firstName: 'Laura',
     lastName: 'Moore',
-    pid: '123456780',
+    onyen: 'lmoore',
     email: 'laura.moore@cs.unc.edu',
     researchInterests: [
       'Network Security',
@@ -122,6 +156,10 @@ final List<FacultyUser> facultyFallback = [
       'Privacy',
     ],
     positionsOpen: 2,
+    courses: [
+      'COMP 590',
+      'COMP 575',
+    ],
   ),
 ];
 
@@ -163,3 +201,240 @@ final List<ImportantDate> importantDatesFallback = [
     date: DateTime(2025, 8, 24, 23, 59, 59),
   ),
 ];
+
+final List<StudentUser> studentsFallback = [
+  StudentUser(
+    firstName: 'Alex',
+    lastName: 'Green',
+    onyen: 'agreen',
+    email: 'agreen@cs.unc.edu',
+    courseTAPref: [
+      'COMP 521',
+      'COMP 550',
+    ],
+    researchInterests: [
+      'Machine Learning',
+      'Natural Language Processing',
+    ],
+    prefProfessors: [
+      'John Doe',
+      'Michael Johnson',
+    ],
+    description:
+        'Aspiring ML researcher with a focus on NLP. Looking for opportunities to contribute to innovative projects.',
+    resumeLink: 'https://resume.com/agreen',
+    videoLink: 'https://video.com/agreen',
+  ),
+  StudentUser(
+    firstName: 'Ben',
+    lastName: 'Taylor',
+    onyen: 'btaylor',
+    email: 'btaylor@cs.unc.edu',
+    courseTAPref: [
+      'COMP 562',
+      'COMP 590',
+    ],
+    researchInterests: [
+      'Computer Vision',
+      'Robotics',
+      'Embedded Systems',
+    ],
+    prefProfessors: [
+      'Alice Smith',
+      'Chris Miller',
+    ],
+    description:
+        'Passionate about computer vision and robotics, with experience in embedded systems.',
+    resumeLink: 'https://resume.com/btaylor',
+    videoLink: 'https://video.com/btaylor',
+  ),
+  StudentUser(
+    firstName: 'Chloe',
+    lastName: 'Miller',
+    onyen: 'cmiller',
+    email: 'cmiller@cs.unc.edu',
+    courseTAPref: [
+      'COMP 530',
+      'COMP 575',
+    ],
+    researchInterests: [
+      'Human-Computer Interaction',
+      'Data Mining',
+      'Cybersecurity',
+    ],
+    prefProfessors: [
+      'Michael Johnson',
+      'Laura Moore',
+    ],
+    description:
+        'Interested in HCI, data mining, and cybersecurity, eager to work on impactful projects.',
+    resumeLink: 'https://resume.com/cmiller',
+    videoLink: 'https://video.com/cmiller',
+  ),
+  StudentUser(
+    firstName: 'Daniel',
+    lastName: 'Young',
+    onyen: 'dyoung',
+    email: 'dyoung@cs.unc.edu',
+    courseTAPref: [
+      'COMP 590',
+      'COMP 555',
+    ],
+    researchInterests: [
+      'Bioinformatics',
+      'Computational Biology',
+    ],
+    prefProfessors: [
+      'Emily Brown',
+      'Jessica Taylor',
+    ],
+    description:
+        'Bioinformatics and computational biology enthusiast with a strong analytical background.',
+    resumeLink: 'https://resume.com/dyoung',
+    videoLink: 'https://video.com/dyoung',
+  ),
+  StudentUser(
+    firstName: 'Ella',
+    lastName: 'Scott',
+    onyen: 'escott',
+    email: 'escott@cs.unc.edu',
+    courseTAPref: [
+      'COMP 560',
+      'COMP 524',
+    ],
+    researchInterests: [
+      'Artificial Intelligence',
+      'Ethics in AI',
+      'Algorithm Design',
+    ],
+    prefProfessors: [
+      'David Williams',
+      'John Doe',
+    ],
+    description:
+        'Focused on AI and ethics, with a goal to contribute to responsible AI development.',
+    resumeLink: 'https://resume.com/escott',
+    videoLink: 'https://video.com/escott',
+  ),
+  StudentUser(
+    firstName: 'Frank',
+    lastName: 'King',
+    onyen: 'fking',
+    email: 'fking@cs.unc.edu',
+    courseTAPref: [
+      'COMP 581',
+      'COMP 550',
+    ],
+    researchInterests: [
+      'Quantum Computing',
+      'Computational Biology',
+    ],
+    prefProfessors: [
+      'Jessica Taylor',
+      'Emily Brown',
+    ],
+    description:
+        'Dedicated to exploring the intersection of quantum computing and biology.',
+    resumeLink: 'https://resume.com/fking',
+    videoLink: 'https://video.com/fking',
+  ),
+  StudentUser(
+    firstName: 'Grace',
+    lastName: 'Adams',
+    onyen: 'gadams',
+    email: 'gadams@cs.unc.edu',
+    courseTAPref: [
+      'COMP 555',
+      'COMP 523',
+    ],
+    researchInterests: [
+      'Augmented Reality',
+      'Virtual Reality',
+      'Computer Graphics',
+    ],
+    prefProfessors: [
+      'Chris Miller',
+      'Alice Smith',
+    ],
+    description:
+        'AR/VR enthusiast with a passion for immersive technology and user experience.',
+    resumeLink: 'https://resume.com/gadams',
+    videoLink: 'https://video.com/gadams',
+  ),
+  StudentUser(
+    firstName: 'Henry',
+    lastName: 'Evans',
+    onyen: 'hevans',
+    email: 'hevans@cs.unc.edu',
+    courseTAPref: [
+      'COMP 580',
+      'COMP 560',
+    ],
+    researchInterests: [
+      'Distributed Systems',
+      'Blockchain',
+    ],
+    prefProfessors: [
+      'Sarah Davis',
+      'David Williams',
+    ],
+    description:
+        'Interested in distributed computing and blockchain, with a focus on scalable systems.',
+    resumeLink: 'https://resume.com/hevans',
+    videoLink: 'https://video.com/hevans',
+  ),
+  StudentUser(
+    firstName: 'Isabella',
+    lastName: 'Perez',
+    onyen: 'iperez',
+    email: 'iperez@cs.unc.edu',
+    courseTAPref: [
+      'COMP 521',
+      'COMP 590',
+    ],
+    researchInterests: [
+      'Cloud Computing',
+      'Data Science',
+    ],
+    prefProfessors: [
+      'Daniel Wilson',
+      'Michael Johnson',
+    ],
+    description:
+        'Data science enthusiast aiming to leverage cloud computing for large-scale data analysis.',
+    resumeLink: 'https://resume.com/iperez',
+    videoLink: 'https://video.com/iperez',
+  ),
+  StudentUser(
+    firstName: 'Jack',
+    lastName: 'Morgan',
+    onyen: 'jmorgan',
+    email: 'jmorgan@cs.unc.edu',
+    courseTAPref: [
+      'COMP 555',
+      'COMP 550',
+    ],
+    researchInterests: [
+      'Network Security',
+      'Cryptography',
+      'Privacy',
+    ],
+    prefProfessors: [
+      'Laura Moore',
+      'Michael Johnson',
+    ],
+    description:
+        'Committed to advancing network security and privacy through cryptography.',
+    resumeLink: 'https://resume.com/jmorgan',
+    videoLink: 'https://video.com/jmorgan',
+  ),
+];
+
+void createMatches(Ref ref){
+  final matches = <FacultyUser, List<StudentUser>>{};
+  for(var faculty in facultyFallback) {
+    matches[faculty] = studentsFallback;
+  }
+  
+  ref.read(matchedProvider.notifier).initDev(matches);
+}

@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fuzzy/fuzzy.dart';
+import 'package:matchwise/core/error/fallback_objects.dart';
 import 'package:matchwise/core/models/api_response.dart';
 import 'package:matchwise/core/models/faculty_user.dart';
 import 'package:matchwise/core/models/matchwise_user.dart';
@@ -26,6 +28,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 Future<void> initApp(Ref ref, BuildContext context) async {
   await initFirebase();
   await setAppVersion(ref);
+  createMatches(ref);
 }
 
 Future<void> setAppVersion(Ref ref) async {
@@ -39,10 +42,10 @@ Future<void> initFirebase() async {
   );
 }
 
-Future<ApiResponse> autofillFacultyForm(String pid) async {
+Future<ApiResponse> autofillFacultyForm(String onyen) async {
   try {
     final dio = Dio();
-    final url = 'https://dir.unc.edu/api/search/$pid';
+    final url = 'https://dir.unc.edu/api/search/$onyen';
 
     final response = await dio.get(url);
     final data = response.data[0];
@@ -50,8 +53,7 @@ Future<ApiResponse> autofillFacultyForm(String pid) async {
       success: true,
       args: {
         'faculty': FacultyUser(
-          id: '',
-          pid: pid,
+          onyen: onyen,
           firstName: data['givenNameIterator'][0],
           lastName: data['snIterator'][0],
           email: data['mailIterator'][0].toString().replaceAll(
@@ -155,3 +157,14 @@ void navigateOff(
       context,
       pageRouteBuilder(page),
     );
+
+List<DropdownMenuEntry<T>> fuzzySearch<T>(
+  List<DropdownMenuEntry<T>> list,
+  String query,
+) {
+  final search = Fuzzy(list.map((ele) => ele.label).toList())
+      .search(query)
+      .map((ele) => ele.item)
+      .toList();
+  return list.where((ele) => search.contains(ele.label)).toList();
+}

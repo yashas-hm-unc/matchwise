@@ -13,33 +13,29 @@ enum UserType {
 }
 
 class MatchWiseUser {
-  String id;
-
   String firstName;
 
   String lastName;
 
-  String pid;
+  String onyen;
 
   String email;
 
   UserType type;
 
   MatchWiseUser({
-    required this.id,
     required this.firstName,
     required this.lastName,
-    required this.pid,
+    required this.onyen,
     required this.email,
     required this.type,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'firstName': firstName,
       'lastName': lastName,
-      'PID': pid,
+      'onyen': onyen,
       'email': email,
       'type': type,
     };
@@ -47,10 +43,9 @@ class MatchWiseUser {
 
   factory MatchWiseUser.fromMap(Map<String, dynamic> map) {
     return MatchWiseUser(
-      id: map['id'] as String,
       firstName: map['firstName'] as String,
       lastName: map['lastName'] as String,
-      pid: map['pid'] as String,
+      onyen: map['onyen'] as String,
       email: map['email'] as String,
       type: map['type'] as UserType,
     );

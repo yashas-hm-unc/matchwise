@@ -324,7 +324,7 @@ void facultyDialog(
   bool loading = false;
   bool loadingAutofill = false;
   bool search = faculty == null;
-  TextEditingController pidCtr = TextEditingController();
+  TextEditingController onyenCtr = TextEditingController();
   TextEditingController fnCtr = TextEditingController();
   TextEditingController lnCtr = TextEditingController();
   TextEditingController emailCtr = TextEditingController();
@@ -394,19 +394,19 @@ void facultyDialog(
                         SizedBox(
                           width: context.width / 4,
                           child: TextFormField(
-                            controller: pidCtr,
+                            controller: onyenCtr,
                             validator: (value) {
                               if (value != null) {
-                                if (value.isEmpty || value.length != 9) {
-                                  return 'PID should be 9 characters.';
+                                if (value.isEmpty) {
+                                  return 'Onyen cannot be empty';
                                 }
                               }
                               return null;
                             },
-                            initialValue: faculty?.pid,
+                            initialValue: faculty?.onyen,
                             decoration: InputDecoration(
-                              labelText: 'PID',
-                              hintText: '123456789',
+                              labelText: 'onyen',
+                              hintText: 'onyen',
                               counterText: '',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15.sp),
@@ -442,7 +442,7 @@ void facultyDialog(
                                 setState(() => loadingAutofill = true);
                                 if (formKey.currentState?.validate() ?? false) {
                                   final response =
-                                      await autofillFacultyForm(pidCtr.text);
+                                      await autofillFacultyForm(onyenCtr.text);
                                   if (response.success) {
                                     setState(() {
                                       search = false;
@@ -626,10 +626,9 @@ void facultyDialog(
                                 });
 
                                 final newFaculty = FacultyUser(
-                                  id: '',
                                   firstName: fnCtr.text,
                                   lastName: lnCtr.text,
-                                  pid: pidCtr.text,
+                                  onyen: onyenCtr.text,
                                   email: emailCtr.text,
                                 );
 
