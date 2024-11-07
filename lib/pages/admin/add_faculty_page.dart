@@ -488,7 +488,6 @@ void facultyDialog(
                         }
                         return null;
                       },
-                      initialValue: faculty?.firstName,
                       decoration: InputDecoration(
                         labelText: 'First Name',
                         hintText: 'John',
@@ -532,7 +531,6 @@ void facultyDialog(
                         }
                         return null;
                       },
-                      initialValue: faculty?.lastName,
                       decoration: InputDecoration(
                         labelText: 'Last Name',
                         hintText: 'Doe',
@@ -576,7 +574,6 @@ void facultyDialog(
                         }
                         return null;
                       },
-                      initialValue: faculty?.email,
                       decoration: InputDecoration(
                         labelText: 'Email',
                         hintText: 'onyen@cs.unc.edu',

@@ -18,10 +18,9 @@ import 'package:matchwise/pages/admin/force_match_page.dart';
 import 'package:matchwise/pages/faculty/add_question_page.dart';
 import 'package:matchwise/pages/faculty/dashboard_page.dart';
 import 'package:matchwise/pages/faculty/edit_preferences_page.dart';
-import 'package:matchwise/pages/faculty/important_dates_page.dart';
+import 'package:matchwise/pages/important_dates_page.dart';
 import 'package:matchwise/pages/student/dashboard_page.dart';
 import 'package:matchwise/pages/student/form_page.dart';
-import 'package:matchwise/pages/student/important_dates_page.dart';
 import 'package:matchwise/providers/common_providers.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -89,7 +88,7 @@ Widget buildScreen(int index, MatchWiseUser user) {
         case 0:
           return const StudentDashboard();
         case 1:
-          return const StudentImportantDatesPage();
+          return const ImportantDatesPage();
         case 2:
           return const StudentFormPage();
       }

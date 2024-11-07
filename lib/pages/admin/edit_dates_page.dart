@@ -52,6 +52,7 @@ class EditTimelinePage extends StatelessWidget {
                           itemBuilder: (ctx, index) => DateItem(
                             date: dates[index],
                             ref: ref,
+                            admin: true,
                           ),
                         );
                       },
@@ -116,6 +117,7 @@ class DateItem extends StatelessWidget {
     super.key,
     required this.date,
     required this.ref,
+    bool admin = false
   });
 
   final ImportantDate date;

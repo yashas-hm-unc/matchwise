@@ -2,10 +2,8 @@ import 'dart:core';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:matchwise/widgets/board/board_list.dart';
 import 'package:matchwise/widgets/board/boardview_controller.dart';
-import 'package:resize/resize.dart';
 
 class BoardView extends StatefulWidget {
   final List<BoardList>? lists;
@@ -171,18 +169,19 @@ class BoardViewState extends State<BoardView>
               duration: const Duration(milliseconds: 400), curve: Curves.ease)
           .whenComplete(
         () {
-          RenderBox object = listStates[tempListIndex!]
-              .context
-              .findRenderObject() as RenderBox;
-          Offset pos = object.localToGlobal(Offset.zero);
-          leftListX = pos.dx;
-          rightListX = pos.dx + object.size.width;
-          Future.delayed(
-            Duration(milliseconds: widget.dragDelay),
-            () {
-              canDrag = true;
-            },
-          );
+          if (listStates[tempListIndex!].context.mounted) {
+            final ctx = listStates[tempListIndex].context;
+            RenderBox object = ctx.findRenderObject() as RenderBox;
+            Offset pos = object.localToGlobal(Offset.zero);
+            leftListX = pos.dx;
+            rightListX = pos.dx + object.size.width;
+            Future.delayed(
+              Duration(milliseconds: widget.dragDelay),
+              () {
+                canDrag = true;
+              },
+            );
+          }
         },
       );
     }
@@ -235,25 +234,30 @@ class BoardViewState extends State<BoardView>
               duration: const Duration(milliseconds: 400), curve: Curves.ease)
           .whenComplete(
         () {
-          RenderBox object = listStates[tempListIndex!]
-              .context
-              .findRenderObject() as RenderBox;
-          Offset pos = object.localToGlobal(Offset.zero);
-          leftListX = pos.dx;
-          rightListX = pos.dx + object.size.width;
-          RenderBox box = listStates[tempListIndex]
-              .itemStates[tempItemIndex!]
-              .context
-              .findRenderObject() as RenderBox;
-          Offset itemPos = box.localToGlobal(Offset.zero);
-          topItemY = itemPos.dy;
-          bottomItemY = itemPos.dy + box.size.height;
-          Future.delayed(
-            Duration(milliseconds: widget.dragDelay),
-            () {
-              canDrag = true;
-            },
-          );
+          if (listStates[tempListIndex!].context.mounted) {
+            final ctx1 = listStates[tempListIndex].context;
+            RenderBox object = ctx1.findRenderObject() as RenderBox;
+            Offset pos = object.localToGlobal(Offset.zero);
+            leftListX = pos.dx;
+            rightListX = pos.dx + object.size.width;
+            if (listStates[tempListIndex]
+                .itemStates[tempItemIndex!]
+                .context
+                .mounted) {
+              final ctx2 =
+                  listStates[tempListIndex].itemStates[tempItemIndex].context;
+              RenderBox box = ctx2.findRenderObject() as RenderBox;
+              Offset itemPos = box.localToGlobal(Offset.zero);
+              topItemY = itemPos.dy;
+              bottomItemY = itemPos.dy + box.size.height;
+              Future.delayed(
+                Duration(milliseconds: widget.dragDelay),
+                () {
+                  canDrag = true;
+                },
+              );
+            }
+          }
         },
       );
     }
@@ -281,18 +285,19 @@ class BoardViewState extends State<BoardView>
               curve: Curves.ease)
           .whenComplete(
         () {
-          RenderBox object = listStates[tempListIndex!]
-              .context
-              .findRenderObject() as RenderBox;
-          Offset pos = object.localToGlobal(Offset.zero);
-          leftListX = pos.dx;
-          rightListX = pos.dx + object.size.width;
-          Future.delayed(
-            Duration(milliseconds: widget.dragDelay),
-            () {
-              canDrag = true;
-            },
-          );
+          if (listStates[tempListIndex!].context.mounted) {
+            final ctx = listStates[tempListIndex].context;
+            RenderBox object = ctx.findRenderObject() as RenderBox;
+            Offset pos = object.localToGlobal(Offset.zero);
+            leftListX = pos.dx;
+            rightListX = pos.dx + object.size.width;
+            Future.delayed(
+              Duration(milliseconds: widget.dragDelay),
+              () {
+                canDrag = true;
+              },
+            );
+          }
         },
       );
     }
@@ -345,25 +350,30 @@ class BoardViewState extends State<BoardView>
               duration: const Duration(milliseconds: 400), curve: Curves.ease)
           .whenComplete(
         () {
-          RenderBox object = listStates[tempListIndex!]
-              .context
-              .findRenderObject() as RenderBox;
-          Offset pos = object.localToGlobal(Offset.zero);
-          leftListX = pos.dx;
-          rightListX = pos.dx + object.size.width;
-          RenderBox box = listStates[tempListIndex]
-              .itemStates[tempItemIndex!]
-              .context
-              .findRenderObject() as RenderBox;
-          Offset itemPos = box.localToGlobal(Offset.zero);
-          topItemY = itemPos.dy;
-          bottomItemY = itemPos.dy + box.size.height;
-          Future.delayed(
-            Duration(milliseconds: widget.dragDelay),
-            () {
-              canDrag = true;
-            },
-          );
+          if (listStates[tempListIndex!].context.mounted) {
+            final ctx1 = listStates[tempListIndex].context;
+            RenderBox object = ctx1.findRenderObject() as RenderBox;
+            Offset pos = object.localToGlobal(Offset.zero);
+            leftListX = pos.dx;
+            rightListX = pos.dx + object.size.width;
+            if (listStates[tempListIndex]
+                .itemStates[tempItemIndex!]
+                .context
+                .mounted) {
+              final ctx2 =
+                  listStates[tempListIndex].itemStates[tempItemIndex].context;
+              RenderBox box = ctx2.findRenderObject() as RenderBox;
+              Offset itemPos = box.localToGlobal(Offset.zero);
+              topItemY = itemPos.dy;
+              bottomItemY = itemPos.dy + box.size.height;
+              Future.delayed(
+                Duration(milliseconds: widget.dragDelay),
+                    () {
+                  canDrag = true;
+                },
+              );
+            }
+          }
         },
       );
     }
@@ -400,21 +410,20 @@ class BoardViewState extends State<BoardView>
       scrollDirection: Axis.horizontal,
       controller: boardViewController,
       itemBuilder: (BuildContext context, int index) {
-
         widget.lists![index] = BoardList(
-              items: widget.lists![index].items,
-              boardView: widget.lists![index].boardView ?? this,
-              draggable: widget.lists![index].draggable,
-              onDropList: widget.lists![index].onDropList,
-              header: widget.lists![index].header,
-              index: widget.lists![index].index != index
-                  ? index
-                  : widget.lists![index].index,
-              onTapList: widget.lists![index].onTapList,
-              onStartDragList: widget.lists![index].onStartDragList,
-              listBuilder: widget.lists![index].listBuilder,
-              listContainer: widget.lists![index].listContainer,
-            );
+          items: widget.lists![index].items,
+          boardView: widget.lists![index].boardView ?? this,
+          draggable: widget.lists![index].draggable,
+          onDropList: widget.lists![index].onDropList,
+          header: widget.lists![index].header,
+          index: widget.lists![index].index != index
+              ? index
+              : widget.lists![index].index,
+          onTapList: widget.lists![index].onTapList,
+          onStartDragList: widget.lists![index].onStartDragList,
+          listBuilder: widget.lists![index].listBuilder,
+          listContainer: widget.lists![index].listContainer,
+        );
         var temp = Container(
           width: widget.width,
           padding: EdgeInsets.fromLTRB(0, 0, 0, widget.bottomPadding ?? 0),
@@ -438,53 +447,6 @@ class BoardViewState extends State<BoardView>
         }
       },
     );
-
-    // final listWidget = <Widget>[];
-    //
-    // for (var index = 0; index < widget.lists!.length; index++) {
-    //   listWidget.add(
-    //     Expanded(
-    //       child: BoardList(
-    //         items: widget.lists![index].items,
-    //         boardView: widget.lists![index].boardView ?? this,
-    //         draggable: widget.lists![index].draggable,
-    //         onDropList: widget.lists![index].onDropList,
-    //         index: widget.lists![index].index != index
-    //             ? index
-    //             : widget.lists![index].index,
-    //         onTapList: widget.lists![index].onTapList,
-    //         onStartDragList: widget.lists![index].onStartDragList,
-    //         listBuilder: widget.lists![index].listBuilder,
-    //         listContainer: widget.lists![index].listContainer,
-    //       ),
-    //     ),
-    //   );
-    //   listWidget.add(
-    //     Gap(15.sp),
-    //   );
-    //   widget.lists![index] = BoardList(
-    //     items: widget.lists![index].items,
-    //     boardView: widget.lists![index].boardView ?? this,
-    //     draggable: widget.lists![index].draggable,
-    //     onDropList: widget.lists![index].onDropList,
-    //     index: widget.lists![index].index != index
-    //         ? index
-    //         : widget.lists![index].index,
-    //     onTapList: widget.lists![index].onTapList,
-    //     onStartDragList: widget.lists![index].onStartDragList,
-    //     listBuilder: widget.lists![index].listBuilder,
-    //     listContainer: widget.lists![index].listContainer,
-    //   );
-    // }
-    //
-    // List<Widget> stackWidgets = <Widget>[
-    //   Row(
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     crossAxisAlignment: CrossAxisAlignment.center,
-    //     mainAxisSize: MainAxisSize.max,
-    //     children: listWidget,
-    //   )
-    // ];
 
     List<Widget> stackWidgets = <Widget>[listWidget];
     bool isInBottomWidget = false;

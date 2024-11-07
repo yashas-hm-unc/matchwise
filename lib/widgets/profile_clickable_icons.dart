@@ -48,7 +48,7 @@ class ProfileClickableIcon extends ConsumerWidget {
 
   List<PopupMenuItem> generateMenu(BuildContext context) {
     final List<PopupMenuItem> list = [];
-    final List<Function> functions = [
+    final List<VoidCallback> functions = [
       () {},
       () {},
       () async {
@@ -65,6 +65,7 @@ class ProfileClickableIcon extends ConsumerWidget {
     for (var i = 0; i < settingsPopup.length; i++) {
       list.add(
         PopupMenuItem(
+          onTap: functions[i],
           value: i + 10,
           child: Text(
             settingsPopup[i],
