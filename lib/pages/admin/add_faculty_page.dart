@@ -335,6 +335,7 @@ void facultyDialog(
   TextEditingController emailCtr = TextEditingController(text: faculty?.email);
   TextEditingController posOpenCtr =
       TextEditingController(text: (faculty?.positionsOpen ?? 0).toString());
+  late TextEditingController researchInterestsCtr;
 
   void fetchDetails(setState) async {
     setState(() => loadingAutofill = true);
@@ -643,54 +644,61 @@ void facultyDialog(
                     ),
                     Gap(15.sp),
                     Autocomplete(
-                      fieldViewBuilder: (_, ctr, node, submit) => TextField(
-                        controller: ctr,
-                        focusNode: node,
-                        decoration: InputDecoration(
-                          labelText: 'Research Interests',
-                          counterText: '',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.sp),
-                            borderSide: BorderSide(
-                              color: black.withOpacity(0.6),
-                              width: 1.sp,
+                      fieldViewBuilder: (_, ctr, node, submit) {
+                        researchInterestsCtr = ctr;
+                        return TextField(
+                          controller: ctr,
+                          focusNode: node,
+                          decoration: InputDecoration(
+                            labelText: 'Research Interests',
+                            counterText: '',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.sp),
+                              borderSide: BorderSide(
+                                color: black.withOpacity(0.6),
+                                width: 1.sp,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.sp),
+                              borderSide: BorderSide(
+                                color: carolinaBlue.withOpacity(0.6),
+                                width: 1.sp,
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.sp),
+                              borderSide: BorderSide(
+                                color: Colors.redAccent.withOpacity(0.6),
+                                width: 1.sp,
+                              ),
                             ),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.sp),
-                            borderSide: BorderSide(
-                              color: carolinaBlue.withOpacity(0.6),
-                              width: 1.sp,
-                            ),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.sp),
-                            borderSide: BorderSide(
-                              color: Colors.redAccent.withOpacity(0.6),
-                              width: 1.sp,
-                            ),
-                          ),
-                        ),
-                        onSubmitted: (val) {
-                          if (val != '') {
-                            setState(
-                              () => researchInterests.add(val),
-                            );
-                          } else {
-                            submit();
-                          }
-                          ctr.clear();
-                        },
-                      ),
+                          onSubmitted: (val) {
+                            if (val != '') {
+                              setState(
+                                    () => researchInterests.add(val),
+                              );
+                            } else {
+                              submit();
+                            }
+                            ctr.clear();
+                          },
+                        );
+                      },
                       optionsBuilder: (val) => ref
                           .read(facultyProvider.notifier)
                           .getResearchInterests()
                           .where(
                             (ele) => ele.startsWith(val.text),
                           ),
-                      onSelected: (val) => setState(
-                        () => researchInterests.add(val),
-                      ),
+                      onSelected: (val)
+                      {
+                        setState(
+                          () => researchInterests.add(val),
+                        );
+                        researchInterestsCtr.clear();
+                      },
                     ),
                     Gap(15.sp),
                     Wrap(
