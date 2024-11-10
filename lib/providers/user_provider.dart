@@ -10,7 +10,7 @@ final StateNotifierProvider<UserNotifier, MatchWiseUser> userProvider =
       lastName: kEmptyString,
       onyen: kEmptyString,
       email: kEmptyString,
-      type: UserType.faculty,
+      type: UserType.admin,
     ),
     ref,
   ),

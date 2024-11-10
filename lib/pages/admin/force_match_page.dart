@@ -94,7 +94,7 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
                       trailingIcon: null,
                       enableFilter: true,
                       enableSearch: false,
-                      filterCallback: fuzzySearch,
+                      filterCallback: fuzzySearchDropDown,
                       dropdownMenuEntries: ref
                           .read(facultyProvider)
                           .map(
@@ -167,7 +167,7 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
                       trailingIcon: null,
                       enableFilter: true,
                       enableSearch: false,
-                      filterCallback: fuzzySearch,
+                      filterCallback: fuzzySearchDropDown,
                       dropdownMenuEntries: ref
                           .read(facultyProvider)
                           .map(

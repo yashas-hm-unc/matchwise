@@ -29,7 +29,7 @@ dependencies:
   package_info_plus: ^8.1.0
   dio: ^5.7.0
   fuzzy: ^0.5.1
-#  flutter_boardview: ^0.2.1
+#  chips_input_autocomplete: ^1.2.1
 
 dev_dependencies:
   flutter_test:

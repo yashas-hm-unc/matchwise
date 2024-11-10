@@ -12,8 +12,6 @@ import 'package:matchwise/providers/common_providers.dart';
 import 'package:matchwise/screens/home_screen.dart';
 import 'package:resize/resize.dart';
 
-import 'login_screen.dart';
-
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 

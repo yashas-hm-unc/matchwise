@@ -157,7 +157,7 @@ void navigateOff(
       pageRouteBuilder(page),
     );
 
-List<DropdownMenuEntry<T>> fuzzySearch<T>(
+List<DropdownMenuEntry<T>> fuzzySearchDropDown<T>(
   List<DropdownMenuEntry<T>> list,
   String query,
 ) {
@@ -166,4 +166,11 @@ List<DropdownMenuEntry<T>> fuzzySearch<T>(
       .map((ele) => ele.item)
       .toList();
   return list.where((ele) => search.contains(ele.label)).toList();
+}
+
+List<String> fuzzySearch(
+  List<String> list,
+  String query,
+) {
+  return Fuzzy(list).search(query).map((e) => e.item).toList();
 }

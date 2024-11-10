@@ -1,3 +1,4 @@
+// import 'package:chips_input_autocomplete/chips_input_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -321,13 +322,65 @@ void facultyDialog(
   FacultyUser? faculty,
 }) {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   bool loading = false;
   bool loadingAutofill = false;
   bool search = faculty == null;
-  TextEditingController onyenCtr = TextEditingController();
-  TextEditingController fnCtr = TextEditingController();
-  TextEditingController lnCtr = TextEditingController();
-  TextEditingController emailCtr = TextEditingController();
+
+  List<String> researchInterests = faculty?.researchInterests ?? [];
+
+  TextEditingController onyenCtr = TextEditingController(text: faculty?.onyen);
+  TextEditingController fnCtr = TextEditingController(text: faculty?.firstName);
+  TextEditingController lnCtr = TextEditingController(text: faculty?.lastName);
+  TextEditingController emailCtr = TextEditingController(text: faculty?.email);
+  TextEditingController posOpenCtr =
+      TextEditingController(text: (faculty?.positionsOpen ?? 0).toString());
+
+  void fetchDetails(setState) async {
+    setState(() => loadingAutofill = true);
+    if (formKey.currentState?.validate() ?? false) {
+      final response = await autofillFacultyForm(onyenCtr.text);
+      if (response.success) {
+        setState(() {
+          search = false;
+          loadingAutofill = false;
+          final newFaculty = response.args!['faculty'] as FacultyUser;
+          fnCtr.text = newFaculty.firstName;
+          lnCtr.text = newFaculty.lastName;
+          emailCtr.text = newFaculty.email;
+        });
+      }
+    }
+    setState(() => loadingAutofill = false);
+  }
+
+  List<Chip> buildChips(setState) {
+    final list = <Chip>[];
+
+    list.clear();
+    for (String i in researchInterests) {
+      list.add(
+        Chip(
+          onDeleted: () => setState(() => researchInterests =
+              researchInterests.where((ele) => ele != i).toList()),
+          deleteIconColor: white,
+          backgroundColor: carolinaBlue,
+          label: Text(
+            i,
+            style: const TextStyle(
+              color: white,
+            ),
+          ),
+          padding: EdgeInsets.symmetric(
+            vertical: 5.sp,
+            horizontal: 8.sp,
+          ),
+        ),
+      );
+    }
+
+    return list;
+  }
 
   showDialog(
     barrierDismissible: false,
@@ -403,7 +456,6 @@ void facultyDialog(
                               }
                               return null;
                             },
-                            initialValue: faculty?.onyen,
                             decoration: InputDecoration(
                               labelText: 'onyen',
                               hintText: 'onyen',
@@ -431,6 +483,8 @@ void facultyDialog(
                               ),
                             ),
                             keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            onFieldSubmitted: (_) => fetchDetails(setState),
                           ),
                         ),
                         if (search)
@@ -438,25 +492,7 @@ void facultyDialog(
                             borderRadius: BorderRadius.circular(15.sp),
                             color: carolinaBlue,
                             child: InkWell(
-                              onTap: () async {
-                                setState(() => loadingAutofill = true);
-                                if (formKey.currentState?.validate() ?? false) {
-                                  final response =
-                                      await autofillFacultyForm(onyenCtr.text);
-                                  if (response.success) {
-                                    setState(() {
-                                      search = false;
-                                      loadingAutofill = false;
-                                      final newFaculty = response
-                                          .args!['faculty'] as FacultyUser;
-                                      fnCtr.text = newFaculty.firstName;
-                                      lnCtr.text = newFaculty.lastName;
-                                      emailCtr.text = newFaculty.email;
-                                    });
-                                  }
-                                }
-                                setState(() => loadingAutofill = false);
-                              },
+                              onTap: () => fetchDetails(setState),
                               borderRadius: BorderRadius.circular(15.sp),
                               child: Container(
                                 padding: EdgeInsets.all(10.sp),
@@ -515,6 +551,7 @@ void facultyDialog(
                         ),
                       ),
                       keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
                     ),
                     Gap(15.sp),
                     TextFormField(
@@ -558,6 +595,7 @@ void facultyDialog(
                         ),
                       ),
                       keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
                     ),
                     Gap(15.sp),
                     TextFormField(
@@ -601,6 +639,110 @@ void facultyDialog(
                         ),
                       ),
                       keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    Gap(15.sp),
+                    Autocomplete(
+                      fieldViewBuilder: (_, ctr, node, submit) => TextField(
+                        controller: ctr,
+                        focusNode: node,
+                        decoration: InputDecoration(
+                          labelText: 'Research Interests',
+                          counterText: '',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.sp),
+                            borderSide: BorderSide(
+                              color: black.withOpacity(0.6),
+                              width: 1.sp,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.sp),
+                            borderSide: BorderSide(
+                              color: carolinaBlue.withOpacity(0.6),
+                              width: 1.sp,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.sp),
+                            borderSide: BorderSide(
+                              color: Colors.redAccent.withOpacity(0.6),
+                              width: 1.sp,
+                            ),
+                          ),
+                        ),
+                        onSubmitted: (val) {
+                          if (val != '') {
+                            setState(
+                              () => researchInterests.add(val),
+                            );
+                          } else {
+                            submit();
+                          }
+                          ctr.clear();
+                        },
+                      ),
+                      optionsBuilder: (val) => ref
+                          .read(facultyProvider.notifier)
+                          .getResearchInterests()
+                          .where(
+                            (ele) => ele.startsWith(val.text),
+                          ),
+                      onSelected: (val) => setState(
+                        () => researchInterests.add(val),
+                      ),
+                    ),
+                    Gap(15.sp),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      alignment: WrapAlignment.start,
+                      spacing: 5.sp,
+                      runSpacing: 5.sp,
+                      children: buildChips(setState),
+                    ),
+                    Gap(15.sp),
+                    TextFormField(
+                      controller: posOpenCtr,
+                      validator: (value) {
+                        if (search) {
+                          return null;
+                        }
+
+                        if (value != null) {
+                          if (value.isEmpty) {
+                            return 'Invalid number.';
+                          }
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Positions Open',
+                        hintText: '2',
+                        counterText: '',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: black.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: carolinaBlue.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: Colors.redAccent.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
                     ),
                   ],
                 ),
