@@ -1,16 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchwise/core/constants/app_constants.dart';
 import 'package:matchwise/core/models/matchwise_user.dart';
+import 'package:matchwise/core/models/student_user.dart';
 
 final StateNotifierProvider<UserNotifier, MatchWiseUser> userProvider =
     StateNotifierProvider(
   (ref) => UserNotifier(
-    MatchWiseUser(
+    StudentUser(
       firstName: kEmptyString,
       lastName: kEmptyString,
       onyen: kEmptyString,
       email: kEmptyString,
-      type: UserType.admin,
+      type: UserType.student,
     ),
     ref,
   ),

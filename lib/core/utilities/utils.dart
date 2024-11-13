@@ -70,6 +70,38 @@ Future<ApiResponse> autofillFacultyForm(String onyen) async {
   return const ApiResponse();
 }
 
+Future<ApiResponse> autofillData(
+  String onyen,
+  UserType type,
+) async {
+  try {
+    final dio = Dio();
+    final url = 'https://dir.unc.edu/api/search/$onyen';
+
+    final response = await dio.get(url);
+    final data = response.data[0];
+    return ApiResponse(
+      success: true,
+      args: {
+        'data': MatchWiseUser(
+          onyen: onyen,
+          firstName: data['givenNameIterator'][0],
+          lastName: data['snIterator'][0],
+          email: data['mailIterator'][0].toString().replaceAll(
+                'unc.edu',
+                'cs.unc.edu',
+              ),
+          type: type,
+        ),
+      },
+    );
+  } catch (e) {
+    log('Error @ Auto Fetch $e');
+  }
+
+  return const ApiResponse();
+}
+
 Widget buildScreen(int index, MatchWiseUser user) {
   switch (user.type) {
     case UserType.admin:

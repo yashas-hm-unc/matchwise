@@ -41,4 +41,21 @@ class FacultyNotifier extends StateNotifier<List<FacultyUser>> {
     }
     return list;
   }
+
+  List<String> getCourses() {
+    final list = <String>[];
+    for (var i in state) {
+      list.addAll(i.courses.where((ele) => !list.contains(ele)));
+    }
+    return list;
+  }
+  
+
+  List<String> getProfessors() {
+    final list = <String>[];
+    for (var i in state) {
+      list.add('${i.firstName} ${i.lastName}');
+    }
+    return list;
+  }
 }

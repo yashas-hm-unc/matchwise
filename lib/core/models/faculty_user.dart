@@ -1,7 +1,7 @@
 import 'package:matchwise/core/models/matchwise_user.dart';
 
 class FacultyUser extends MatchWiseUser {
-  int positionsOpen;
+  int positionsOpen = 0;
 
   List<String> researchInterests = [];
 

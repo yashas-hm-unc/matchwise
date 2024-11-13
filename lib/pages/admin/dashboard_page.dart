@@ -18,7 +18,7 @@ class AdminDashboard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'DashBoard',
+            'Dashboard',
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 28.sp,

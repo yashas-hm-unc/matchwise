@@ -21,7 +21,7 @@ class ImportantDatesPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Modify Important Dates',
+            'Important Dates',
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 28.sp,

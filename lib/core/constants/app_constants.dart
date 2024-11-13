@@ -12,7 +12,7 @@ final List<String> facultyNavigation = [
   'Dashboard',
   'Important Dates',
   'Edit Matching Parameters',
-  'Add Questions'
+  // 'Add Questions'
 ];
 
 final List<String> facultyNavIcons = [

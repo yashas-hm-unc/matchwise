@@ -3,10 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:matchwise/core/constants/app_colors.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
+import 'package:matchwise/providers/match_provider.dart';
 import 'package:matchwise/providers/ui_provider.dart';
+import 'package:matchwise/providers/user_provider.dart';
+import 'package:matchwise/widgets/board/board_item.dart';
 import 'package:matchwise/widgets/board/board_list.dart';
 import 'package:matchwise/widgets/board/boardview.dart';
 import 'package:matchwise/widgets/board/boardview_controller.dart';
+import 'package:matchwise/widgets/student_item.dart';
 import 'package:resize/resize.dart';
 
 class FacultyDashboardPage extends ConsumerStatefulWidget {
@@ -23,7 +27,7 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
   final List<String> keys = [
     'shortlisted',
     'interviewing',
-    'selected',
+    'finalized',
   ];
 
   @override
@@ -32,6 +36,7 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
     final width =
         (context.width - (collapsed ? context.width / 20 : context.width / 5)) /
             3.3;
+    final map = ref.watch(sortedProvider);
 
     return Container(
       height: context.height,
@@ -59,7 +64,18 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
                   boardViewController: boardController,
                   lists: [
                     BoardList(
-                      items: [],
+                      items: map[keys[0]]!
+                          .map(
+                            (e) => BoardItem(
+                              onDropItem: onDropItem,
+                              draggable: true,
+                              item: StudentItem(
+                                user: e,
+                                facultyOnyen: ref.read(userProvider).onyen,
+                              ),
+                            ),
+                          )
+                          .toList(),
                       header: [
                         Text(
                           'Students',
@@ -85,7 +101,18 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
                       ),
                     ),
                     BoardList(
-                      items: [],
+                      items: map[keys[1]]!
+                          .map(
+                            (e) => BoardItem(
+                              onDropItem: onDropItem,
+                              draggable: true,
+                              item: StudentItem(
+                                user: e,
+                                facultyOnyen: ref.read(userProvider).onyen,
+                              ),
+                            ),
+                          )
+                          .toList(),
                       header: [
                         Text(
                           'Interviewing',
@@ -111,7 +138,18 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
                       ),
                     ),
                     BoardList(
-                      items: [],
+                      items: map[keys[2]]!
+                          .map(
+                            (e) => BoardItem(
+                              onDropItem: onDropItem,
+                              draggable: true,
+                              item: StudentItem(
+                                user: e,
+                                facultyOnyen: ref.read(userProvider).onyen,
+                              ),
+                            ),
+                          )
+                          .toList(),
                       header: [
                         Text(
                           'Final Selection',
@@ -184,5 +222,29 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
         ],
       ),
     );
+  }
+
+  void onDropItem(
+    int? newListIndex,
+    int? newIndex,
+    int? oldListIndex,
+    int? oldIndex,
+    BoardItemState state,
+  ) {
+    final notifier = ref.read(sortedProvider.notifier);
+    if (newListIndex != oldListIndex) {
+      notifier.addToNewList(
+        keys[oldListIndex!],
+        keys[newListIndex!],
+        oldIndex!,
+        newIndex!,
+      );
+    } else {
+      notifier.updateList(
+        keys[newListIndex!],
+        oldIndex!,
+        newIndex!,
+      );
+    }
   }
 }

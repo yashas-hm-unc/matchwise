@@ -20,7 +20,9 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
   bool loading = false;
   TextEditingController posCtr = TextEditingController();
   TextEditingController resIntCtr = TextEditingController();
+  TextEditingController coursesCtr = TextEditingController();
   List<String> researchInterests = [];
+  List<String> courses = [];
   late FacultyUser user;
 
   @override
@@ -55,12 +57,45 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
                   ),
                 ),
                 Gap(30.sp),
+                TextFormField(
+                  controller: posCtr,
+                  decoration: InputDecoration(
+                    labelText: 'Positions Open',
+                    hintText: '2',
+                    counterText: '',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.sp),
+                      borderSide: BorderSide(
+                        color: black.withOpacity(0.6),
+                        width: 1.sp,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.sp),
+                      borderSide: BorderSide(
+                        color: carolinaBlue.withOpacity(0.6),
+                        width: 1.sp,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.sp),
+                      borderSide: BorderSide(
+                        color: Colors.redAccent.withOpacity(0.6),
+                        width: 1.sp,
+                      ),
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => submitForm(),
+                ),
+                Gap(15.sp),
                 Wrap(
                   crossAxisAlignment: WrapCrossAlignment.start,
                   alignment: WrapAlignment.start,
                   spacing: 5.sp,
                   runSpacing: 5.sp,
-                  children: buildChips(setState),
+                  children: buildResearchChips(setState),
                 ),
                 Gap(15.sp),
                 Autocomplete(
@@ -98,7 +133,7 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
                         if (val != '') {
                           setState(
                             () {
-                              if(!researchInterests.contains(val)){
+                              if (!researchInterests.contains(val)) {
                                 researchInterests.add(val);
                               }
                             },
@@ -119,7 +154,7 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
                   onSelected: (val) {
                     setState(
                       () {
-                        if(!researchInterests.contains(val)){
+                        if (!researchInterests.contains(val)) {
                           researchInterests.add(val);
                         }
                       },
@@ -128,11 +163,19 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
                   },
                 ),
                 Gap(15.sp),
-                TextFormField(
-                  controller: posCtr,
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.start,
+                  alignment: WrapAlignment.start,
+                  spacing: 5.sp,
+                  runSpacing: 5.sp,
+                  children: buildCourseChips(setState),
+                ),
+                Gap(15.sp),
+                TextField(
+                  enabled: courses.length < 5,
+                  controller: coursesCtr,
                   decoration: InputDecoration(
-                    labelText: 'Positions Open',
-                    hintText: '2',
+                    labelText: 'Courses',
                     counterText: '',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15.sp),
@@ -156,9 +199,10 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
                       ),
                     ),
                   ),
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => submitForm(),
+                  onSubmitted: (val) {
+                    setState(() => courses.add(val.toUpperCase()));
+                    coursesCtr.clear();
+                  },
                 ),
               ],
             ),
@@ -210,9 +254,9 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
   }
 
   void submitForm() {
-    try{
+    try {
       int.parse(posCtr.text);
-    }catch(_){
+    } catch (_) {
       return;
     }
 
@@ -227,7 +271,7 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
     setState(() => loading = false);
   }
 
-  List<Chip> buildChips(setState) {
+  List<Chip> buildResearchChips(setState) {
     final list = <Chip>[];
 
     list.clear();
@@ -236,6 +280,35 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
         Chip(
           onDeleted: () => setState(() => researchInterests =
               researchInterests.where((ele) => ele != i).toList()),
+          deleteIconColor: white,
+          backgroundColor: carolinaBlue,
+          label: Text(
+            i,
+            style: const TextStyle(
+              color: white,
+            ),
+          ),
+          padding: EdgeInsets.symmetric(
+            vertical: 5.sp,
+            horizontal: 8.sp,
+          ),
+        ),
+      );
+    }
+
+    return list;
+  }
+
+  List<Chip> buildCourseChips(setState) {
+    final list = <Chip>[];
+
+    list.clear();
+    for (String i in courses) {
+      list.add(
+        Chip(
+          onDeleted: () => setState(
+            () => courses = courses.where((ele) => ele != i).toList(),
+          ),
           deleteIconColor: white,
           backgroundColor: carolinaBlue,
           label: Text(
