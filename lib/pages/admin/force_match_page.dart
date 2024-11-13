@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:matchwise/core/constants/app_colors.dart';
-import 'package:matchwise/core/error/fallback_objects.dart';
 import 'package:matchwise/core/models/faculty_user.dart';
 import 'package:matchwise/core/models/student_user.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
@@ -61,9 +60,6 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
               boardViewController: BoardViewController(),
               lists: [
                 BoardList(
-                  // onStartDragList: (listIndex) {},
-                  // onTapList: (listIndex) async {},
-                  // onDropList: (listIndex, oldListIndex) {},
                   draggable: false,
                   header: [
                     DropdownMenu<FacultyUser>(
@@ -99,7 +95,7 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
                           .read(facultyProvider)
                           .map(
                             (ele) => DropdownMenuEntry(
-                              value: facultyFallback.first,
+                              value: ele,
                               label: '${ele.lastName}, ${ele.firstName}',
                             ),
                           )
@@ -110,11 +106,8 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
                   items: faculty1Match
                       .map(
                         (e) => BoardItem(
+                          onDropItem: onDropItem,
                           draggable: true,
-                          // onStartDragItem: (listIndex, itemIndex, state) {},
-                          // onDropItem: (listIndex, itemIndex, oldListIndex,
-                          //     oldItemIndex, state) {},
-                          // onTapItem: (listIndex, itemIndex, state) async {},
                           item: StudentItem(
                             user: e,
                             facultyOnyen: selectedFaculty1!.onyen,
@@ -172,7 +165,7 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
                           .read(facultyProvider)
                           .map(
                             (ele) => DropdownMenuEntry(
-                              value: facultyFallback.first,
+                              value: ele,
                               label: '${ele.lastName}, ${ele.firstName}',
                             ),
                           )
@@ -183,10 +176,11 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
                   items: faculty2Match
                       .map(
                         (e) => BoardItem(
+                          onDropItem: onDropItem,
                           draggable: true,
                           item: StudentItem(
                             user: e,
-                            facultyOnyen: selectedFaculty1!.onyen,
+                            facultyOnyen: selectedFaculty2!.onyen,
                           ),
                         ),
                       )
@@ -210,5 +204,33 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
         ],
       ),
     );
+  }
+
+  void onDropItem(
+    int? newListIndex,
+    int? newIndex,
+    int? oldListIndex,
+    int? oldIndex,
+    BoardItemState state,
+  ) {
+    final list = [
+      selectedFaculty1,
+      selectedFaculty2,
+    ];
+    final notifier = ref.read(matchedProvider.notifier);
+    if (newListIndex != oldListIndex) {
+      notifier.addToNewList(
+        list[oldListIndex!]!,
+        list[newListIndex!]!,
+        oldIndex!,
+        newIndex!,
+      );
+    } else {
+      notifier.updateList(
+        list[newListIndex!]!,
+        oldIndex!,
+        newIndex!,
+      );
+    }
   }
 }

@@ -28,6 +28,7 @@ Future<void> initApp(Ref ref, BuildContext context) async {
   await initFirebase();
   await setAppVersion(ref);
   createMatches(ref);
+  createdShortlisted(ref);
 }
 
 Future<void> setAppVersion(Ref ref) async {

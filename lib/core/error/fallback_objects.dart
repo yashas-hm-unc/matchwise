@@ -430,11 +430,40 @@ final List<StudentUser> studentsFallback = [
   ),
 ];
 
-void createMatches(Ref ref){
-  final matches = <FacultyUser, List<StudentUser>>{};
-  for(var faculty in facultyFallback) {
-    matches[faculty] = studentsFallback;
+void createdShortlisted(Ref ref){
+  Map<String, List<String>> hiringStages = {
+    'shortlisted': ['agreen', 'btaylor', 'cmiller', 'fking', 'dyoung'],
+    'interviewing': ['agreen', 'jmorgan', 'hevans', 'escott', 'gadams'],
+    'finalized': ['btaylor', 'iperez', 'dyoung', 'jmorgan']
+  };
+  final matches = <String, List<StudentUser>>{};
+  for (var i in hiringStages.keys) {
+    matches[i] = studentsFallback
+        .where((e) => hiringStages[i]!.contains(e.onyen))
+        .toList();
   }
-  
+  ref.read(sortedProvider.notifier).initDev(matches);
+}
+
+void createMatches(Ref ref) {
+  Map<String, List<String>> facultyToStudentMatches = {
+    'jdoe': ['agreen', 'btaylor', 'cmiller', 'dyoung'],
+    'asmith': ['escott', 'gadams', 'hevans'],
+    'mjohnson': ['btaylor', 'fking', 'jmorgan'],
+    'ebrown': ['dyoung', 'agreen', 'escott'],
+    'dwilliams': ['hevans', 'gadams', 'iperez'],
+    'jtaylor': ['fking', 'jmorgan', 'btaylor'],
+    'cmiller': ['cmiller', 'agreen', 'dyoung'],
+    'sdavis': ['iperez', 'jmorgan', 'escott'],
+    'dwilson': ['gadams', 'hevans', 'btaylor', 'cmiller'],
+    'lmoore': ['agreen', 'dyoung', 'jmorgan']
+  };
+
+  final matches = <FacultyUser, List<StudentUser>>{};
+  for (var i in facultyToStudentMatches.keys) {
+    matches[facultyFallback.firstWhere((e) => e.onyen == i)] = studentsFallback
+        .where((e) => facultyToStudentMatches[i]!.contains(e.onyen))
+        .toList();
+  }
   ref.read(matchedProvider.notifier).initDev(matches);
 }

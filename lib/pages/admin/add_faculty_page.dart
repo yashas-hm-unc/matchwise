@@ -64,47 +64,49 @@ class AddFacultyPage extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.bottomRight,
-            child: Consumer(builder: (_, ref, __) {
-              return Material(
-                borderRadius: BorderRadius.circular(25.sp),
-                color: carolinaBlue,
-                child: InkWell(
-                  onTap: () => facultyDialog(context, ref),
+            child: Consumer(
+              builder: (_, ref, __) {
+                return Material(
                   borderRadius: BorderRadius.circular(25.sp),
-                  child: Container(
-                    height: 50.sp,
-                    width: context.width / 8,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.sp,
-                      vertical: 4.sp,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add,
-                          size: 20.sp,
-                          color: white,
-                        ),
-                        Gap(10.sp),
-                        FittedBox(
-                          child: Text(
-                            'Add Faculty',
-                            style: TextStyle(
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.bold,
-                              color: white,
+                  color: carolinaBlue,
+                  child: InkWell(
+                    onTap: () => facultyDialog(context, ref),
+                    borderRadius: BorderRadius.circular(25.sp),
+                    child: Container(
+                      height: 50.sp,
+                      width: context.width / 8,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.sp,
+                        vertical: 4.sp,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add,
+                            size: 20.sp,
+                            color: white,
+                          ),
+                          Gap(10.sp),
+                          FittedBox(
+                            child: Text(
+                              'Add Faculty',
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.bold,
+                                color: white,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            }),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -328,6 +330,7 @@ void facultyDialog(
   bool search = faculty == null;
 
   List<String> researchInterests = faculty?.researchInterests ?? [];
+  List<String> courses = faculty?.courses ?? [];
 
   TextEditingController onyenCtr = TextEditingController(text: faculty?.onyen);
   TextEditingController fnCtr = TextEditingController(text: faculty?.firstName);
@@ -336,6 +339,7 @@ void facultyDialog(
   TextEditingController posOpenCtr =
       TextEditingController(text: (faculty?.positionsOpen ?? 0).toString());
   late TextEditingController researchInterestsCtr;
+  TextEditingController coursesCtr = TextEditingController();
 
   void fetchDetails(setState) async {
     setState(() => loadingAutofill = true);
@@ -355,15 +359,46 @@ void facultyDialog(
     setState(() => loadingAutofill = false);
   }
 
-  List<Chip> buildChips(setState) {
+  List<Chip> buildResearchChips(setState) {
     final list = <Chip>[];
 
     list.clear();
     for (String i in researchInterests) {
       list.add(
         Chip(
-          onDeleted: () => setState(() => researchInterests =
-              researchInterests.where((ele) => ele != i).toList()),
+          onDeleted: () => setState(
+            () => researchInterests =
+                researchInterests.where((ele) => ele != i).toList(),
+          ),
+          deleteIconColor: white,
+          backgroundColor: carolinaBlue,
+          label: Text(
+            i,
+            style: const TextStyle(
+              color: white,
+            ),
+          ),
+          padding: EdgeInsets.symmetric(
+            vertical: 5.sp,
+            horizontal: 8.sp,
+          ),
+        ),
+      );
+    }
+
+    return list;
+  }
+
+  List<Chip> buildCourseChips(setState) {
+    final list = <Chip>[];
+
+    list.clear();
+    for (String i in courses) {
+      list.add(
+        Chip(
+          onDeleted: () => setState(
+            () => courses = courses.where((ele) => ele != i).toList(),
+          ),
           deleteIconColor: white,
           backgroundColor: carolinaBlue,
           label: Text(
@@ -647,6 +682,7 @@ void facultyDialog(
                       fieldViewBuilder: (_, ctr, node, submit) {
                         researchInterestsCtr = ctr;
                         return TextField(
+                          enabled: researchInterests.length < 5,
                           controller: ctr,
                           focusNode: node,
                           decoration: InputDecoration(
@@ -677,7 +713,7 @@ void facultyDialog(
                           onSubmitted: (val) {
                             if (val != '') {
                               setState(
-                                    () => researchInterests.add(val),
+                                () => researchInterests.add(val),
                               );
                             } else {
                               submit();
@@ -692,8 +728,7 @@ void facultyDialog(
                           .where(
                             (ele) => ele.startsWith(val.text),
                           ),
-                      onSelected: (val)
-                      {
+                      onSelected: (val) {
                         setState(
                           () => researchInterests.add(val),
                         );
@@ -706,7 +741,49 @@ void facultyDialog(
                       alignment: WrapAlignment.start,
                       spacing: 5.sp,
                       runSpacing: 5.sp,
-                      children: buildChips(setState),
+                      children: buildResearchChips(setState),
+                    ),
+                    Gap(15.sp),
+                    TextField(
+                      enabled: courses.length < 5,
+                      controller: coursesCtr,
+                      decoration: InputDecoration(
+                        labelText: 'Courses',
+                        counterText: '',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: black.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: carolinaBlue.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: Colors.redAccent.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                      ),
+                      onSubmitted: (val) {
+                        setState(() => courses.add(val.toUpperCase()));
+                        coursesCtr.clear();
+                      },
+                    ),
+                    Gap(15.sp),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      alignment: WrapAlignment.start,
+                      spacing: 5.sp,
+                      runSpacing: 5.sp,
+                      children: buildCourseChips(setState),
                     ),
                     Gap(15.sp),
                     TextFormField(

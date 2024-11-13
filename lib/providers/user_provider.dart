@@ -23,4 +23,9 @@ class UserNotifier extends StateNotifier<MatchWiseUser> {
   );
 
   final Ref ref;
+
+  void update(MatchWiseUser user) {
+    // update on firestore
+    state = user;
+  }
 }
