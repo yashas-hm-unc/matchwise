@@ -58,4 +58,8 @@ class FacultyNotifier extends StateNotifier<List<FacultyUser>> {
     }
     return list;
   }
+  
+  set list(List<FacultyUser> users) => state = users;
+  
+  List<FacultyUser> get list => state;
 }

@@ -15,6 +15,8 @@ extension NumUtils on num {
 
 extension StringUtils on String {
   bool get isEmail => RegExp(r'^[a-z0-9.+]*@cs\.unc\.edu$').hasMatch(this);
+
+  String get onyen => replaceAll('@cs.unc.edu', '');
 }
 
 extension ContextUtils on BuildContext {

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:matchwise/core/constants/app_colors.dart';
+import 'package:matchwise/core/constants/app_constants.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
+import 'package:matchwise/core/utilities/toast_utils.dart';
 import 'package:matchwise/providers/match_provider.dart';
 import 'package:matchwise/providers/ui_provider.dart';
 import 'package:matchwise/providers/user_provider.dart';
@@ -24,11 +26,6 @@ class FacultyDashboardPage extends ConsumerStatefulWidget {
 class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
   bool loading = false;
   BoardViewController boardController = BoardViewController();
-  final List<String> keys = [
-    'shortlisted',
-    'interviewing',
-    'finalized',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +181,19 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
               borderRadius: BorderRadius.circular(15.sp),
               color: carolinaBlue,
               child: InkWell(
-                onTap: () {},
+                onTap: () async {
+                  setState(() => loading = true);
+                  final results =
+                      await ref.read(sortedProvider.notifier).saveList();
+                  if (context.mounted) {
+                    if (results.success) {
+                      successToast('Selection saved successfully', context);
+                    } else {
+                      errorToast(results.message, context);
+                    }
+                  }
+                  setState(() => loading = false);
+                },
                 borderRadius: BorderRadius.circular(15.sp),
                 child: Container(
                   width: 130.sp,

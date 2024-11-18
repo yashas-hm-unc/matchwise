@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchwise/core/constants/app_constants.dart';
+import 'package:matchwise/core/models/api_response.dart';
 import 'package:matchwise/core/models/matchwise_user.dart';
 import 'package:matchwise/core/models/student_user.dart';
+import 'package:matchwise/core/utilities/firestore_utils.dart';
 
 final StateNotifierProvider<UserNotifier, MatchWiseUser> userProvider =
     StateNotifierProvider(
@@ -25,8 +29,23 @@ class UserNotifier extends StateNotifier<MatchWiseUser> {
 
   final Ref ref;
 
-  void update(MatchWiseUser user) {
-    // update on firestore
-    state = user;
+  Future<ApiResponse> update(MatchWiseUser user) async {
+    try {
+      state = user;
+      await updateProfile(user);
+      return const ApiResponse(success: true);
+    } catch (e, s) {
+      log(
+        'Error @ update profile',
+        error: e,
+        stackTrace: s,
+      );
+    }
+
+    return const ApiResponse();
   }
+
+  MatchWiseUser get user => state;
+
+  set user(MatchWiseUser user) => state = user;
 }

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ImportantDate {
   String id;
   String title;
@@ -24,7 +26,7 @@ class ImportantDate {
     return ImportantDate(
       id: json['id'] as String,
       title: json['title'] as String,
-      date: json['date'] as DateTime,
+      date: (json['date'] as Timestamp).toDate(),
       requiredDate: json['required'] as bool,
     );
   }

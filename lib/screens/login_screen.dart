@@ -6,6 +6,8 @@ import 'package:matchwise/core/constants/app_colors.dart';
 import 'package:matchwise/core/constants/app_constants.dart';
 import 'package:matchwise/core/utilities/auth_utils.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
+import 'package:matchwise/core/utilities/utils.dart';
+import 'package:matchwise/screens/home_screen.dart';
 import 'package:resize/resize.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -103,8 +105,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ? null
                               : () async {
                                   setState(() => loading = true);
-                                  await googleSignIn();
-                                  setState(() => loading = false);
+                                  // await googleSignIn();
+                                  final result = await debugSignin();
+                                  await ref.read(
+                                      FutureProvider((ref) => initData(ref))
+                                          .future);
+                                  if (!result.success) {
+                                    setState(() => loading = false);
+                                  } else {
+                                    if (context.mounted) {
+                                      navigateOffAll(
+                                        context,
+                                        const HomeScreen(),
+                                      );
+                                    }
+                                  }
                                 },
                           child: Container(
                             width: (context.width * 0.4) / 3,

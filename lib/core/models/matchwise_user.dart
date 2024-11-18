@@ -23,31 +23,33 @@ class MatchWiseUser {
 
   UserType type;
 
+  bool active;
+
   MatchWiseUser({
     required this.firstName,
     required this.lastName,
     required this.onyen,
     required this.email,
     required this.type,
+    required this.active,
   });
+  
+  Map<String, dynamic> toJson() => {
+    'firstName': firstName,
+    'lastName': lastName,
+    'onyen': onyen,
+    'email': email,
+    'type': type.toString(),
+  };
 
-  Map<String, dynamic> toJson() {
-    return {
-      'firstName': firstName,
-      'lastName': lastName,
-      'onyen': onyen,
-      'email': email,
-      'type': type,
-    };
-  }
-
-  factory MatchWiseUser.fromMap(Map<String, dynamic> map) {
+  factory MatchWiseUser.fromJson(Map<String, dynamic> json) {
     return MatchWiseUser(
-      firstName: map['firstName'] as String,
-      lastName: map['lastName'] as String,
-      onyen: map['onyen'] as String,
-      email: map['email'] as String,
-      type: map['type'] as UserType,
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      onyen: json['onyen'] as String,
+      email: json['email'] as String,
+      active: true,
+      type: UserType.admin,
     );
   }
 }

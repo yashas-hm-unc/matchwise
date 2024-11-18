@@ -1,15 +1,16 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fuzzy/fuzzy.dart';
-import 'package:matchwise/core/error/fallback_objects.dart';
 import 'package:matchwise/core/models/api_response.dart';
 import 'package:matchwise/core/models/faculty_user.dart';
 import 'package:matchwise/core/models/matchwise_user.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
+import 'package:matchwise/core/utilities/firestore_utils.dart';
 import 'package:matchwise/firebase_options.dart';
 import 'package:matchwise/pages/admin/add_faculty_page.dart';
 import 'package:matchwise/pages/admin/dashboard_page.dart';
@@ -19,16 +20,45 @@ import 'package:matchwise/pages/faculty/add_question_page.dart';
 import 'package:matchwise/pages/faculty/dashboard_page.dart';
 import 'package:matchwise/pages/faculty/edit_preferences_page.dart';
 import 'package:matchwise/pages/important_dates_page.dart';
+import 'package:matchwise/pages/profile_page.dart';
 import 'package:matchwise/pages/student/dashboard_page.dart';
 import 'package:matchwise/pages/student/form_page.dart';
 import 'package:matchwise/providers/common_providers.dart';
+import 'package:matchwise/screens/home_screen.dart';
+import 'package:matchwise/screens/login_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-Future<void> initApp(Ref ref, BuildContext context) async {
+Future<Widget> initApp(Ref ref, BuildContext context) async {
   await initFirebase();
   await setAppVersion(ref);
-  createMatches(ref);
-  createdShortlisted(ref);
+  await getMatchingCollection(ref);
+  // createMatches(ref);
+  // createdShortlisted(ref);
+  final fireUser = FirebaseAuth.instance.currentUser;
+  if (fireUser != null) {
+    await initData(ref);
+    return const HomeScreen();
+  } else {
+    return const LoginScreen();
+  }
+}
+
+Future<void> initData(Ref ref) async {
+  final fireUser = FirebaseAuth.instance.currentUser!;
+  final user = (await getUserData(ref, fireUser.email!.onyen))!;
+  // print(user.to);
+  switch (user.type) {
+    case UserType.admin:
+      await getFaculty(ref);
+      await getStudents(ref);
+      await getMatchedData(ref);
+    case UserType.student:
+      await getFaculty(ref);
+    case UserType.faculty:
+      await getStudents(ref);
+      await getSortedData(ref);
+  }
+  await getImportantDates(ref);
 }
 
 Future<void> setAppVersion(Ref ref) async {
@@ -40,6 +70,8 @@ Future<void> initFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // await FirebaseAuth.instance.signOut();
 }
 
 Future<ApiResponse> autofillFacultyForm(String onyen) async {
@@ -72,7 +104,6 @@ Future<ApiResponse> autofillFacultyForm(String onyen) async {
 
 Future<ApiResponse> autofillData(
   String onyen,
-  UserType type,
 ) async {
   try {
     final dio = Dio();
@@ -91,7 +122,8 @@ Future<ApiResponse> autofillData(
                 'unc.edu',
                 'cs.unc.edu',
               ),
-          type: type,
+          type: UserType.student,
+          active: true,
         ),
       },
     );
@@ -103,6 +135,9 @@ Future<ApiResponse> autofillData(
 }
 
 Widget buildScreen(int index, MatchWiseUser user) {
+  if(index==10){
+    return const ProfilePage();
+  }
   switch (user.type) {
     case UserType.admin:
       switch (index) {

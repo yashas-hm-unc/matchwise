@@ -49,9 +49,15 @@ final List<String> adminNavIcons = [
 ];
 
 final List<String> settingsPopup = [
-  'Settings',
+  // 'Settings',
   'Profile',
   'Logout',
+];
+
+final List<String> keys = [
+  'shortlisted',
+  'interviewing',
+  'finalized',
 ];
 
 const String logoAsset = 'assets/images/logo.svg';
@@ -80,3 +86,16 @@ const loginScreenText =
     'Please sign in using your\n<onyen>@cs.unc.edu\nemail address.';
 
 const loginScreenBtnText = 'Login using';
+
+const String userCollection = 'users';
+
+const String metadataFirestore = 'metadata';
+
+const String matchCollection = 'matching';
+
+const String sortedCollection = 'sorted';
+
+const String matchesCollection = 'matches';
+
+const String impDatesCollection = 'important_dates';
+

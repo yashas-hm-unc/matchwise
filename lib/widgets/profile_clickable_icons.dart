@@ -6,6 +6,7 @@ import 'package:matchwise/core/constants/app_constants.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
 import 'package:matchwise/core/utilities/utils.dart';
 import 'package:matchwise/providers/ui_provider.dart';
+import 'package:matchwise/providers/user_provider.dart';
 import 'package:matchwise/screens/splash_screen.dart';
 import 'package:resize/resize.dart';
 
@@ -36,7 +37,18 @@ class ProfileClickableIcon extends ConsumerWidget {
           -20.sp,
           -20.sp,
         ),
-        icon: Container(),
+        icon: FittedBox(
+          fit: BoxFit.cover,
+          child: Text(
+            ref.watch(userProvider).firstName[0] +
+                ref.watch(userProvider).lastName[0],
+            style: TextStyle(
+              fontSize: 23.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
         tooltip: 'Profile Menu',
         onSelected: (selected) =>
             ref.read(navIndexProvider.notifier).update((_) => selected),
@@ -49,7 +61,6 @@ class ProfileClickableIcon extends ConsumerWidget {
   List<PopupMenuItem> generateMenu(BuildContext context) {
     final List<PopupMenuItem> list = [];
     final List<VoidCallback> functions = [
-      () {},
       () {},
       () async {
         await FirebaseAuth.instance.signOut();

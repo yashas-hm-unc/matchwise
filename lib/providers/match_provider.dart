@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:matchwise/core/models/api_response.dart';
 import 'package:matchwise/core/models/faculty_user.dart';
 import 'package:matchwise/core/models/student_user.dart';
+import 'package:matchwise/core/utilities/firestore_utils.dart';
 
 final StateNotifierProvider<MatchedNotifier,
         Map<FacultyUser, List<StudentUser>>> matchedProvider =
@@ -12,8 +14,9 @@ final StateNotifierProvider<MatchedNotifier,
 
 final StateNotifierProvider<SortedNotifier, Map<String, List<StudentUser>>>
     sortedProvider = StateNotifierProvider(
-  (_) => SortedNotifier(
+  (ref) => SortedNotifier(
     {},
+    ref,
   ),
 );
 
@@ -44,13 +47,18 @@ class MatchedNotifier
     state = {...state};
   }
 
-  void initDev(Map<FacultyUser, List<StudentUser>> matches) {
-    state = matches;
-  }
+  set map(Map<FacultyUser, List<StudentUser>> matched) => state = matched;
+
+  Map<FacultyUser, List<StudentUser>> get map => state;
 }
 
 class SortedNotifier extends StateNotifier<Map<String, List<StudentUser>>> {
-  SortedNotifier(super.state);
+  SortedNotifier(
+    super.state,
+    this.ref,
+  );
+
+  final Ref ref;
 
   void updateList(
     String key,
@@ -75,7 +83,12 @@ class SortedNotifier extends StateNotifier<Map<String, List<StudentUser>>> {
     state = {...state};
   }
 
-  void initDev(Map<String, List<StudentUser>> matches) {
-    state = matches;
+  Future<ApiResponse> saveList() async {
+    final results = await updateSortedData(state, ref);
+    return results;
   }
+
+  set map(Map<String, List<StudentUser>> sorted) => state = sorted;
+
+  Map<String, List<StudentUser>> get map => state;
 }

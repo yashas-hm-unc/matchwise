@@ -10,4 +10,8 @@ final StateNotifierProvider<StudentNotifier, List<StudentUser>>
 
 class StudentNotifier extends StateNotifier<List<StudentUser>> {
   StudentNotifier(super.state);
+
+  set list(List<StudentUser> users) => state = users;
+
+  List<StudentUser> get list => state;
 }

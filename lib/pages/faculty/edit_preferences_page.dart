@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:matchwise/core/constants/app_colors.dart';
 import 'package:matchwise/core/models/faculty_user.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
+import 'package:matchwise/core/utilities/toast_utils.dart';
 import 'package:matchwise/providers/faculty_provider.dart';
 import 'package:matchwise/providers/user_provider.dart';
 import 'package:resize/resize.dart';
@@ -29,6 +32,7 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
   void initState() {
     user = ref.read(userProvider) as FacultyUser;
     researchInterests = user.researchInterests;
+    courses = user.courses;
     posCtr.text = user.positionsOpen.toString();
     super.initState();
   }
@@ -253,20 +257,25 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
     );
   }
 
-  void submitForm() {
+  void submitForm() async {
     try {
       int.parse(posCtr.text);
     } catch (_) {
+      log(_.toString());
       return;
     }
 
     setState(() => loading = true);
-    final oldUser = ref.read(userProvider) as FacultyUser;
-    if (oldUser.researchInterests != researchInterests ||
-        oldUser.positionsOpen != user.positionsOpen) {
-      user.researchInterests = researchInterests;
-      user.positionsOpen = int.parse(posCtr.text);
-      ref.read(userProvider.notifier).update(user);
+    user.researchInterests = researchInterests;
+    user.positionsOpen = int.parse(posCtr.text);
+    final results = await ref.read(userProvider.notifier).update(user);
+
+    if (mounted) {
+      if (results.success) {
+        successToast('Matching parameters updated Successfully', context);
+      } else {
+        errorToast(results.message, context);
+      }
     }
     setState(() => loading = false);
   }

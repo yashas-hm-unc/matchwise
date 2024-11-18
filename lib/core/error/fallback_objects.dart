@@ -442,7 +442,7 @@ void createdShortlisted(Ref ref){
         .where((e) => hiringStages[i]!.contains(e.onyen))
         .toList();
   }
-  ref.read(sortedProvider.notifier).initDev(matches);
+  ref.read(sortedProvider.notifier).map = matches;
 }
 
 void createMatches(Ref ref) {
@@ -465,5 +465,5 @@ void createMatches(Ref ref) {
         .where((e) => facultyToStudentMatches[i]!.contains(e.onyen))
         .toList();
   }
-  ref.read(matchedProvider.notifier).initDev(matches);
+  ref.read(matchedProvider.notifier).map = matches;
 }

@@ -570,7 +570,7 @@ void dateDialog(
                           );
                           
                           if(date!=null){
-                            await ref.read(dateProvider.notifier).updateList(newDate);
+                            await ref.read(dateProvider.notifier).updateInList(newDate);
                           }else{
                             await ref.read(dateProvider.notifier).addToList(newDate);
                           }

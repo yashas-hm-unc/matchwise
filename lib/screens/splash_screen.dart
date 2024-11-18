@@ -9,7 +9,6 @@ import 'package:matchwise/core/constants/app_constants.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
 import 'package:matchwise/core/utilities/utils.dart';
 import 'package:matchwise/providers/common_providers.dart';
-import 'package:matchwise/screens/home_screen.dart';
 import 'package:resize/resize.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -24,6 +23,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   late final AnimationController animationController;
   late final Animation<double> zoomAnimation;
   late final Animation<double> fadeAnimation;
+  late Widget screen;
 
   @override
   void initState() {
@@ -56,11 +56,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     animationController.addStatusListener((e) {
       if (e.isCompleted) {
-        Future.delayed(
-          500.milliseconds,
-          // () => mounted ? navigateOffAll(context, const LoginScreen()) : null,
-          () => mounted ? navigateOffAll(context, const HomeScreen()) : null,
-        );
+        mounted ? navigateOffAll(context, screen) : null;
       }
     });
 
@@ -77,7 +73,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: ref.watch(initAppProvider(context)).when(
-            data: (_) {
+            data: (w) {
+              screen = w;
               animationController.forward();
               return Center(
                 child: Column(

@@ -35,3 +35,35 @@ Future<ApiResponse> googleSignIn() async {
     message: 'Some unexpected error occurred',
   );
 }
+
+Future<ApiResponse> debugSignin() async {
+  try {
+    // Admin
+    // await FirebaseAuth.instance.signInWithEmailAndPassword(
+    //   email: 'yashashm@cs.unc.edu',
+    //   password: '123456',
+    // );
+    
+    // Student
+    // await FirebaseAuth.instance.signInWithEmailAndPassword(
+    //   email: 'agreen@cs.unc.edu',
+    //   password: '123456',
+    // );
+    
+    // Faculty
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: 'asmith@cs.unc.edu',
+      password: '123456',
+    );
+    
+    return const ApiResponse(success: true);
+  } catch (e, s) {
+    log(
+      'Error @ Google Login: $e',
+      error: e,
+      stackTrace: s,
+    );
+  }
+
+  return const ApiResponse();
+}
