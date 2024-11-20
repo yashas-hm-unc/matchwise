@@ -38,3 +38,4 @@ app.*.map.json
 # Flutter Specific
 lib/secrets.dart
 lib/firebase_options.dart
+firebase.json
