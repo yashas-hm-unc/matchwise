@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:matchwise/core/models/api_response.dart';
+import 'package:matchwise/core/models/matchwise_user.dart';
 
 Future<ApiResponse> googleSignIn() async {
   try {
@@ -36,26 +37,30 @@ Future<ApiResponse> googleSignIn() async {
   );
 }
 
-Future<ApiResponse> debugSignin() async {
+Future<ApiResponse> debugSignin({
+  UserType type = UserType.admin,
+}) async {
   try {
-    // Admin
-    // await FirebaseAuth.instance.signInWithEmailAndPassword(
-    //   email: 'yashashm@cs.unc.edu',
-    //   password: '123456',
-    // );
-    
-    // Student
-    // await FirebaseAuth.instance.signInWithEmailAndPassword(
-    //   email: 'agreen@cs.unc.edu',
-    //   password: '123456',
-    // );
-    
-    // Faculty
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: 'asmith@cs.unc.edu',
-      password: '123456',
-    );
-    
+    switch (type) {
+      case UserType.admin:
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: 'yashashm@cs.unc.edu',
+          password: '123456',
+        );
+        break;
+      case UserType.student:
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: 'agreen@cs.unc.edu',
+          password: '123456',
+        );
+        break;
+      case UserType.faculty:
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: 'asmith@cs.unc.edu',
+          password: '123456',
+        );
+        break;
+    }
     return const ApiResponse(success: true);
   } catch (e, s) {
     log(

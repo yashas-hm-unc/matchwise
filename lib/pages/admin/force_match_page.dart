@@ -12,6 +12,7 @@ import 'package:matchwise/widgets/board/board_item.dart';
 import 'package:matchwise/widgets/board/board_list.dart';
 import 'package:matchwise/widgets/board/boardview.dart';
 import 'package:matchwise/widgets/board/boardview_controller.dart';
+import 'package:matchwise/widgets/student_details.dart';
 import 'package:matchwise/widgets/student_item.dart';
 import 'package:resize/resize.dart';
 
@@ -106,6 +107,7 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
                   items: faculty1Match
                       .map(
                         (e) => BoardItem(
+                          onTapItem: onTapItem,
                           onDropItem: onDropItem,
                           draggable: true,
                           item: StudentItem(
@@ -176,6 +178,7 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
                   items: faculty2Match
                       .map(
                         (e) => BoardItem(
+                          onTapItem: onTapItem,
                           onDropItem: onDropItem,
                           draggable: true,
                           item: StudentItem(
@@ -212,7 +215,7 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
     int? oldListIndex,
     int? oldIndex,
     BoardItemState state,
-  ) {
+  ) async {
     final list = [
       selectedFaculty1,
       selectedFaculty2,
@@ -231,6 +234,33 @@ class _ForceMatchPageState extends ConsumerState<ForceMatchPage> {
         oldIndex!,
         newIndex!,
       );
+    }
+  }
+
+  void onTapItem(
+    int? list,
+    int? index,
+    BoardItemState state,
+  ) {
+    if (list != null && index != null) {
+      final map = ref.read(matchedProvider);
+      FacultyUser? faculty;
+
+      switch (list) {
+        case 0:
+          faculty = selectedFaculty1;
+          break;
+        case 1:
+          faculty = selectedFaculty2;
+          break;
+      }
+
+      if (faculty != null) {
+        showStudentDetails(
+          context,
+          map[faculty]![index],
+        );
+      }
     }
   }
 }

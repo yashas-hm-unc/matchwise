@@ -368,7 +368,7 @@ class BoardViewState extends State<BoardView>
               bottomItemY = itemPos.dy + box.size.height;
               Future.delayed(
                 Duration(milliseconds: widget.dragDelay),
-                    () {
+                () {
                   canDrag = true;
                 },
               );

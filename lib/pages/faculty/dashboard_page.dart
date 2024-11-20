@@ -12,6 +12,7 @@ import 'package:matchwise/widgets/board/board_item.dart';
 import 'package:matchwise/widgets/board/board_list.dart';
 import 'package:matchwise/widgets/board/boardview.dart';
 import 'package:matchwise/widgets/board/boardview_controller.dart';
+import 'package:matchwise/widgets/student_details.dart';
 import 'package:matchwise/widgets/student_item.dart';
 import 'package:resize/resize.dart';
 
@@ -61,9 +62,10 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
                   boardViewController: boardController,
                   lists: [
                     BoardList(
-                      items: map[keys[0]]!
+                      items: (map[keys[0]] ?? [])
                           .map(
                             (e) => BoardItem(
+                              onTapItem: onTapItem,
                               onDropItem: onDropItem,
                               draggable: true,
                               item: StudentItem(
@@ -98,9 +100,10 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
                       ),
                     ),
                     BoardList(
-                      items: map[keys[1]]!
+                      items: (map[keys[1]] ?? [])
                           .map(
                             (e) => BoardItem(
+                              onTapItem: onTapItem,
                               onDropItem: onDropItem,
                               draggable: true,
                               item: StudentItem(
@@ -135,9 +138,10 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
                       ),
                     ),
                     BoardList(
-                      items: map[keys[2]]!
+                      items: (map[keys[2]] ?? [])
                           .map(
                             (e) => BoardItem(
+                              onTapItem: onTapItem,
                               onDropItem: onDropItem,
                               draggable: true,
                               item: StudentItem(
@@ -253,6 +257,20 @@ class _FacultyDashboardPageState extends ConsumerState<FacultyDashboardPage> {
         keys[newListIndex!],
         oldIndex!,
         newIndex!,
+      );
+    }
+  }
+
+  void onTapItem(
+    int? list,
+    int? index,
+    BoardItemState state,
+  ) {
+    if (list != null && index != null) {
+      final map = ref.read(sortedProvider);
+      showStudentDetails(
+        context,
+        map[keys[list]]![index],
       );
     }
   }

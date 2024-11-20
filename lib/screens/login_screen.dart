@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:matchwise/core/constants/app_colors.dart';
 import 'package:matchwise/core/constants/app_constants.dart';
+import 'package:matchwise/core/models/matchwise_user.dart';
 import 'package:matchwise/core/utilities/auth_utils.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
 import 'package:matchwise/core/utilities/utils.dart';
@@ -106,7 +107,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               : () async {
                                   setState(() => loading = true);
                                   // await googleSignIn();
-                                  final result = await debugSignin();
+                                  final result = await debugSignin(
+                                    type: UserType.admin,
+                                  );
                                   await ref.read(
                                       FutureProvider((ref) => initData(ref))
                                           .future);

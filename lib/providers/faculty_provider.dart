@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchwise/core/error/fallback_objects.dart';
+import 'package:matchwise/core/models/api_response.dart';
 import 'package:matchwise/core/models/faculty_user.dart';
+import 'package:matchwise/core/utilities/firestore_utils.dart';
 
 final StateNotifierProvider<FacultyNotifier, List<FacultyUser>>
     facultyProvider = StateNotifierProvider(
@@ -13,25 +15,40 @@ final StateNotifierProvider<FacultyNotifier, List<FacultyUser>>
 class FacultyNotifier extends StateNotifier<List<FacultyUser>> {
   FacultyNotifier(super.state);
 
-  Future<void> addToList(FacultyUser user) async {
-    //TODO: Add to firestore
-    state.add(user);
-    state.sort((ob1, ob2) => ob1.firstName.compareTo(ob2.firstName));
-    state = [...state];
+  Future<ApiResponse> addToList(FacultyUser user) async {
+    final result = await updateFaculty(user);
+
+    if (result.success) {
+      state.add(user);
+      state.sort((ob1, ob2) => ob1.firstName.compareTo(ob2.firstName));
+      state = [...state];
+    }
+
+    return result;
   }
 
-  Future<void> updateList(FacultyUser user) async {
-    //TODO: Update on firestore
-    state.removeWhere((obj) => obj.onyen == user.onyen);
-    state.add(user);
-    state.sort((ob1, ob2) => ob1.firstName.compareTo(ob2.firstName));
-    state = [...state];
+  Future<ApiResponse> updateList(FacultyUser user) async {
+    final result = await updateFaculty(user);
+
+    if (result.success) {
+      state.removeWhere((obj) => obj.onyen == user.onyen);
+      state.add(user);
+      state.sort((ob1, ob2) => ob1.firstName.compareTo(ob2.firstName));
+      state = [...state];
+    }
+
+    return result;
   }
 
-  Future<void> removeFromList(FacultyUser user) async {
-    state.removeWhere((obj) => obj.onyen == user.onyen);
-    state = [...state];
-    //TODO: Remove from firestore
+  Future<ApiResponse> removeFromList(FacultyUser user) async {
+    final results = await deleteFaculty(user);
+
+    if (results.success) {
+      state.removeWhere((obj) => obj.onyen == user.onyen);
+      state = [...state];
+    }
+
+    return results;
   }
 
   List<String> getResearchInterests() {
@@ -49,7 +66,6 @@ class FacultyNotifier extends StateNotifier<List<FacultyUser>> {
     }
     return list;
   }
-  
 
   List<String> getProfessors() {
     final list = <String>[];
@@ -58,8 +74,8 @@ class FacultyNotifier extends StateNotifier<List<FacultyUser>> {
     }
     return list;
   }
-  
+
   set list(List<FacultyUser> users) => state = users;
-  
+
   List<FacultyUser> get list => state;
 }

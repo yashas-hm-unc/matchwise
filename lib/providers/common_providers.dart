@@ -7,4 +7,8 @@ final FutureProviderFamily<Widget, BuildContext> initAppProvider =
 
 final StateProvider<String> versionProvider = StateProvider<String>((_) => '');
 
-final StateProvider<String> matchingCollectionProvider = StateProvider<String>((_)=>'');
+final StateProvider<String> currMatchProvider =
+    StateProvider<String>((_) => '');
+
+final StateProvider<List<String>> prevMatchProvider =
+    StateProvider<List<String>>((_) => []);

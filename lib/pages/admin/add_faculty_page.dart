@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:matchwise/core/constants/app_colors.dart';
+import 'package:matchwise/core/models/api_response.dart';
 import 'package:matchwise/core/models/faculty_user.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
+import 'package:matchwise/core/utilities/toast_utils.dart';
 import 'package:matchwise/core/utilities/utils.dart';
 import 'package:matchwise/providers/faculty_provider.dart';
 import 'package:resize/resize.dart';
@@ -49,11 +51,10 @@ class AddFacultyPage extends StatelessWidget {
 
                         return ListView.builder(
                           itemCount: faculty.length,
-                          itemBuilder: (ctx, index) =>
-                              FacultyItem(
-                                facultyUser: faculty[index],
-                                ref: ref,
-                              ),
+                          itemBuilder: (ctx, index) => FacultyItem(
+                            facultyUser: faculty[index],
+                            ref: ref,
+                          ),
                         );
                       },
                     ),
@@ -167,12 +168,11 @@ class FacultyItem extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: () =>
-                facultyDialog(
-                  context,
-                  ref,
-                  faculty: facultyUser,
-                ),
+            onTap: () => facultyDialog(
+              context,
+              ref,
+              faculty: facultyUser,
+            ),
             customBorder: const CircleBorder(),
             splashColor: carolinaBlue,
             child: Padding(
@@ -208,123 +208,127 @@ class FacultyItem extends StatelessWidget {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) =>
-          AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.sp),
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.sp),
+        ),
+        contentPadding: EdgeInsets.zero,
+        content: StatefulBuilder(
+          builder: (_, setState) => Container(
+            constraints: BoxConstraints(
+              maxWidth: context.width / 5,
+              maxHeight: context.height / 4.5,
             ),
-            contentPadding: EdgeInsets.zero,
-            content: StatefulBuilder(
-              builder: (_, setState) =>
-                  Container(
-                    constraints: BoxConstraints(
-                      maxWidth: context.width / 5,
-                      maxHeight: context.height / 4.5,
+            padding: EdgeInsets.all(15.sp),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      size: 30.sp,
+                      color: Colors.redAccent,
                     ),
-                    padding: EdgeInsets.all(15.sp),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.warning_amber_rounded,
-                              size: 30.sp,
-                              color: Colors.redAccent,
-                            ),
-                            Gap(15.sp),
-                            Text(
-                              'Confirm Deletion',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.sp,
-                                color: Colors.redAccent,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Gap(15.sp),
-                        Expanded(
-                          child: Text(
-                            'Are you sure you want to delete this faculty?',
-                            style: TextStyle(
-                              fontSize: 20.sp,
-                            ),
-                          ),
-                        ),
-                        Gap(15.sp),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            InkWell(
-                              borderRadius: BorderRadius.circular(15.sp),
-                              onTap: () => Navigator.pop(ctx),
-                              child: Padding(
-                                padding: EdgeInsets.all(10.sp),
-                                child: Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                    fontSize: 20.sp,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Gap(15.sp),
-                            InkWell(
-                              onTap: () async {
-                                setState(() => loading = true);
-                                await ref
-                                    .read(facultyProvider.notifier)
-                                    .removeFromList(facultyUser);
-                                setState(() => loading = false);
-                                if (ctx.mounted) Navigator.pop(ctx);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(10.sp),
-                                child: AnimatedSwitcher(
-                                  duration: 500.milliseconds,
-                                  child: loading
-                                      ? SizedBox(
-                                    height: 30.sp,
-                                    width: 30.sp,
-                                    child: const CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation(
-                                        carolinaBlue,
-                                      ),
-                                    ),
-                                  )
-                                      : Text(
-                                    'Delete',
-                                    style: TextStyle(
-                                      fontSize: 20.sp,
-                                      color: Colors.redAccent,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
+                    Gap(15.sp),
+                    Text(
+                      'Confirm Deletion',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.sp,
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                  ],
+                ),
+                Gap(15.sp),
+                Expanded(
+                  child: Text(
+                    'Are you sure you want to delete this faculty?',
+                    style: TextStyle(
+                      fontSize: 20.sp,
                     ),
                   ),
+                ),
+                Gap(15.sp),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    InkWell(
+                      borderRadius: BorderRadius.circular(15.sp),
+                      onTap: () => Navigator.pop(ctx),
+                      child: Padding(
+                        padding: EdgeInsets.all(10.sp),
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Gap(15.sp),
+                    InkWell(
+                      onTap: () async {
+                        setState(() => loading = true);
+                        final result = await ref
+                            .read(facultyProvider.notifier)
+                            .removeFromList(facultyUser);
+
+                        if (!result.success && context.mounted) {
+                          errorToast(result.message, context);
+                        }
+
+                        setState(() => loading = false);
+                        if (ctx.mounted) Navigator.pop(ctx);
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.all(10.sp),
+                        child: AnimatedSwitcher(
+                          duration: 500.milliseconds,
+                          child: loading
+                              ? SizedBox(
+                                  height: 30.sp,
+                                  width: 30.sp,
+                                  child: const CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation(
+                                      carolinaBlue,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    fontSize: 20.sp,
+                                    color: Colors.redAccent,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
+        ),
+      ),
     );
   }
 }
 
-void facultyDialog(BuildContext context,
-    WidgetRef ref, {
-      FacultyUser? faculty,
-    }) {
+void facultyDialog(
+  BuildContext context,
+  WidgetRef ref, {
+  FacultyUser? faculty,
+}) {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool loading = false;
@@ -339,7 +343,7 @@ void facultyDialog(BuildContext context,
   TextEditingController lnCtr = TextEditingController(text: faculty?.lastName);
   TextEditingController emailCtr = TextEditingController(text: faculty?.email);
   TextEditingController posOpenCtr =
-  TextEditingController(text: (faculty?.positionsOpen ?? 0).toString());
+      TextEditingController(text: (faculty?.positionsOpen ?? 0).toString());
   late TextEditingController researchInterestsCtr;
   TextEditingController coursesCtr = TextEditingController();
 
@@ -361,8 +365,10 @@ void facultyDialog(BuildContext context,
     setState(() => loadingAutofill = false);
   }
 
-  List<Chip> buildChips(List<String> value,
-      Function(String) onDelete,) {
+  List<Chip> buildChips(
+    List<String> value,
+    Function(String) onDelete,
+  ) {
     final list = <Chip>[];
 
     list.clear();
@@ -392,526 +398,528 @@ void facultyDialog(BuildContext context,
   showDialog(
     barrierDismissible: false,
     context: context,
-    builder: (ctx) =>
-        AlertDialog(
-          shape: RoundedRectangleBorder(
+    builder: (ctx) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.sp),
+      ),
+      contentPadding: EdgeInsets.zero,
+      content: StatefulBuilder(
+        builder: (_, setState) => Container(
+          width: context.width / 2,
+          height: context.height / 0.8,
+          padding: EdgeInsets.all(15.sp),
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.sp),
           ),
-          contentPadding: EdgeInsets.zero,
-          content: StatefulBuilder(
-            builder: (_, setState) =>
-                Container(
-                  width: context.width / 2,
-                  height: context.height / 0.8,
-                  padding: EdgeInsets.all(15.sp),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.sp),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      faculty != null ? 'Edit Faculty' : 'Add Faculty',
+                      style: TextStyle(
+                        fontSize: 23.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              faculty != null ? 'Edit Faculty' : 'Add Faculty',
-                              style: TextStyle(
-                                fontSize: 23.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: loading || loadingAutofill
-                                ? null
-                                : () => Navigator.pop(ctx),
-                            customBorder: const CircleBorder(),
-                            splashColor: carolinaBlue,
-                            child: Padding(
-                              padding: EdgeInsets.all(10.sp),
-                              child: Icon(
-                                Icons.close,
-                                color: black.withOpacity(0.6),
-                                size: 30.sp,
-                              ),
-                            ),
-                          ),
-                        ],
+                  InkWell(
+                    onTap: loading || loadingAutofill
+                        ? null
+                        : () => Navigator.pop(ctx),
+                    customBorder: const CircleBorder(),
+                    splashColor: carolinaBlue,
+                    child: Padding(
+                      padding: EdgeInsets.all(10.sp),
+                      child: Icon(
+                        Icons.close,
+                        color: black.withOpacity(0.6),
+                        size: 30.sp,
                       ),
-                      Gap(50.sp),
-                      Form(
-                        key: formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                SizedBox(
-                                  width: context.width / 4,
-                                  child: TextFormField(
-                                    controller: onyenCtr,
-                                    validator: (value) {
-                                      if (value != null) {
-                                        if (value.isEmpty) {
-                                          return 'Onyen cannot be empty';
-                                        }
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
-                                      labelText: 'onyen',
-                                      hintText: 'onyen',
-                                      counterText: '',
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            15.sp),
-                                        borderSide: BorderSide(
-                                          color: black.withOpacity(0.6),
-                                          width: 1.sp,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            15.sp),
-                                        borderSide: BorderSide(
-                                          color: carolinaBlue.withOpacity(0.6),
-                                          width: 1.sp,
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            15.sp),
-                                        borderSide: BorderSide(
-                                          color: Colors.redAccent.withOpacity(
-                                              0.6),
-                                          width: 1.sp,
-                                        ),
-                                      ),
-                                    ),
-                                    keyboardType: TextInputType.number,
-                                    textInputAction: TextInputAction.done,
-                                    onFieldSubmitted: (_) =>
-                                        fetchDetails(setState),
-                                  ),
-                                ),
-                                if (search)
-                                  Material(
-                                    borderRadius: BorderRadius.circular(15.sp),
-                                    color: carolinaBlue,
-                                    child: InkWell(
-                                      onTap: () => fetchDetails(setState),
-                                      borderRadius: BorderRadius.circular(
-                                          15.sp),
-                                      child: Container(
-                                        padding: EdgeInsets.all(10.sp),
-                                        child: Text(
-                                          'Autofill',
-                                          style: TextStyle(
-                                            fontSize: 20.sp,
-                                            fontWeight: FontWeight.bold,
-                                            color: white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            Gap(15.sp),
-                            TextFormField(
-                              controller: fnCtr,
-                              validator: (value) {
-                                if (search) {
-                                  return null;
+                    ),
+                  ),
+                ],
+              ),
+              Gap(50.sp),
+              Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(
+                          width: context.width / 4,
+                          child: TextFormField(
+                            controller: onyenCtr,
+                            validator: (value) {
+                              if (value != null) {
+                                if (value.isEmpty) {
+                                  return 'Onyen cannot be empty';
                                 }
-
-                                if (value != null) {
-                                  if (value.isEmpty) {
-                                    return 'First name cannot be empty.';
-                                  }
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                labelText: 'First Name',
-                                hintText: 'John',
-                                counterText: '',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: black.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: carolinaBlue.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: Colors.redAccent.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'onyen',
+                              hintText: 'onyen',
+                              counterText: '',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.sp),
+                                borderSide: BorderSide(
+                                  color: black.withOpacity(0.6),
+                                  width: 1.sp,
                                 ),
                               ),
-                              keyboardType: TextInputType.name,
-                              textInputAction: TextInputAction.next,
-                            ),
-                            Gap(15.sp),
-                            TextFormField(
-                              controller: lnCtr,
-                              validator: (value) {
-                                if (search) {
-                                  return null;
-                                }
-
-                                if (value != null) {
-                                  if (value.isEmpty) {
-                                    return 'Last name cannot be empty.';
-                                  }
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                labelText: 'Last Name',
-                                hintText: 'Doe',
-                                counterText: '',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: black.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: carolinaBlue.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: Colors.redAccent.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.sp),
+                                borderSide: BorderSide(
+                                  color: carolinaBlue.withOpacity(0.6),
+                                  width: 1.sp,
                                 ),
                               ),
-                              keyboardType: TextInputType.name,
-                              textInputAction: TextInputAction.next,
-                            ),
-                            Gap(15.sp),
-                            TextFormField(
-                              controller: emailCtr,
-                              validator: (value) {
-                                if (search) {
-                                  return null;
-                                }
-
-                                if (value != null) {
-                                  if (value.isEmpty || !value.isEmail) {
-                                    return 'Invalid email.';
-                                  }
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                labelText: 'Email',
-                                hintText: 'onyen@cs.unc.edu',
-                                counterText: '',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: black.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: carolinaBlue.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: Colors.redAccent.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.sp),
+                                borderSide: BorderSide(
+                                  color: Colors.redAccent.withOpacity(0.6),
+                                  width: 1.sp,
                                 ),
                               ),
-                              keyboardType: TextInputType.emailAddress,
-                              textInputAction: TextInputAction.next,
                             ),
-                            Gap(15.sp),
-                            Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.start,
-                              alignment: WrapAlignment.start,
-                              spacing: 5.sp,
-                              runSpacing: 5.sp,
-                              children: buildChips(
-                                researchInterests,
-                                    (i) =>
-                                    setState(
-                                            () =>
-                                        researchInterests =
-                                            researchInterests.where((ele) =>
-                                            ele != i).toList()
-                                    ),
-                              ),
-                            ),
-                            Gap(15.sp),
-                            Autocomplete(
-                              fieldViewBuilder: (_, ctr, node, submit) {
-                                researchInterestsCtr = ctr;
-                                return TextField(
-                                  enabled: researchInterests.length < 5,
-                                  controller: ctr,
-                                  focusNode: node,
-                                  decoration: InputDecoration(
-                                    labelText: 'Research Interests',
-                                    counterText: '',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          15.sp),
-                                      borderSide: BorderSide(
-                                        color: black.withOpacity(0.6),
-                                        width: 1.sp,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          15.sp),
-                                      borderSide: BorderSide(
-                                        color: carolinaBlue.withOpacity(0.6),
-                                        width: 1.sp,
-                                      ),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          15.sp),
-                                      borderSide: BorderSide(
-                                        color: Colors.redAccent.withOpacity(
-                                            0.6),
-                                        width: 1.sp,
-                                      ),
-                                    ),
-                                  ),
-                                  onSubmitted: (val) {
-                                    if (val != '') {
-                                      setState(
-                                            () => researchInterests.add(val),
-                                      );
-                                    } else {
-                                      submit();
-                                    }
-                                    ctr.clear();
-                                  },
-                                );
-                              },
-                              optionsBuilder: (val) =>
-                                  ref
-                                      .read(facultyProvider.notifier)
-                                      .getResearchInterests()
-                                      .where(
-                                        (ele) => ele.startsWith(val.text),
-                                  ),
-                              onSelected: (val) {
-                                setState(
-                                      () => researchInterests.add(val),
-                                );
-                                researchInterestsCtr.clear();
-                              },
-                            ),
-                            Gap(15.sp),
-                            Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.start,
-                              alignment: WrapAlignment.start,
-                              spacing: 5.sp,
-                              runSpacing: 5.sp,
-                              children: buildChips(
-                                courses, (i) =>
-                                  setState(
-                                        () => courses =
-                                        courses.where((ele) => ele != i)
-                                            .toList(),
-                                  ),
-                              ),
-                            ),
-                            Gap(15.sp),
-                            TextField(
-                              enabled: courses.length < 5,
-                              controller: coursesCtr,
-                              decoration: InputDecoration(
-                                labelText: 'Courses',
-                                counterText: '',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: black.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: carolinaBlue.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: Colors.redAccent.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                              ),
-                              onSubmitted: (val) {
-                                setState(() => courses.add(val.toUpperCase()));
-                                coursesCtr.clear();
-                              },
-                            ),
-                            Gap(15.sp),
-
-                            TextFormField(
-                              controller: posOpenCtr,
-                              validator: (value) {
-                                if (search) {
-                                  return null;
-                                }
-
-                                if (value != null) {
-                                  if (value.isEmpty) {
-                                    return 'Invalid number.';
-                                  }
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                labelText: 'Positions Open',
-                                hintText: '2',
-                                counterText: '',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: black.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: carolinaBlue.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  borderSide: BorderSide(
-                                    color: Colors.redAccent.withOpacity(0.6),
-                                    width: 1.sp,
-                                  ),
-                                ),
-                              ),
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.done,
-                            ),
-                          ],
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            onFieldSubmitted: (_) => fetchDetails(setState),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.bottomRight,
-                          child: Material(
-                            color: carolinaBlue,
+                        if (search)
+                          Material(
                             borderRadius: BorderRadius.circular(15.sp),
+                            color: carolinaBlue,
                             child: InkWell(
-                              onTap: loadingAutofill
-                                  ? null
-                                  : () async {
-                                final bool dataValid =
-                                    formKey.currentState?.validate() ?? false;
-                                if (dataValid) {
-                                  setState(() {
-                                    loading = true;
-                                  });
-
-                                  final newFaculty = FacultyUser(
-                                    firstName: fnCtr.text,
-                                    lastName: lnCtr.text,
-                                    onyen: onyenCtr.text,
-                                    email: emailCtr.text,
-                                  );
-
-                                  if (faculty != null) {
-                                    await ref
-                                        .read(facultyProvider.notifier)
-                                        .updateList(newFaculty);
-                                  } else {
-                                    await ref
-                                        .read(facultyProvider.notifier)
-                                        .addToList(newFaculty);
-                                  }
-
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                  if (ctx.mounted) Navigator.pop(ctx);
-                                }
-                              },
+                              onTap: () => fetchDetails(setState),
                               borderRadius: BorderRadius.circular(15.sp),
                               child: Container(
-                                width: 130.sp,
-                                height: 60.sp,
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.all(15.sp),
-                                child: AnimatedSwitcher(
-                                  duration: 500.milliseconds,
-                                  child: loading
-                                      ? SizedBox(
-                                    width: 30.sp,
-                                    height: 30.sp,
-                                    child: const CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation(
-                                        white,
-                                      ),
-                                    ),
-                                  )
-                                      : FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      'Save',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: white,
-                                        fontSize: 30.sp,
-                                      ),
-                                    ),
+                                padding: EdgeInsets.all(10.sp),
+                                child: Text(
+                                  'Autofill',
+                                  style: TextStyle(
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: white,
                                   ),
                                 ),
                               ),
                             ),
                           ),
+                      ],
+                    ),
+                    Gap(15.sp),
+                    TextFormField(
+                      controller: fnCtr,
+                      validator: (value) {
+                        if (search) {
+                          return null;
+                        }
+
+                        if (value != null) {
+                          if (value.isEmpty) {
+                            return 'First name cannot be empty.';
+                          }
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'First Name',
+                        hintText: 'John',
+                        counterText: '',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: black.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: carolinaBlue.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: Colors.redAccent.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
                         ),
                       ),
-                    ],
+                      keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    Gap(15.sp),
+                    TextFormField(
+                      controller: lnCtr,
+                      validator: (value) {
+                        if (search) {
+                          return null;
+                        }
+
+                        if (value != null) {
+                          if (value.isEmpty) {
+                            return 'Last name cannot be empty.';
+                          }
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Last Name',
+                        hintText: 'Doe',
+                        counterText: '',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: black.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: carolinaBlue.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: Colors.redAccent.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                      ),
+                      keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    Gap(15.sp),
+                    TextFormField(
+                      controller: emailCtr,
+                      validator: (value) {
+                        if (search) {
+                          return null;
+                        }
+
+                        if (value != null) {
+                          if (value.isEmpty || !value.isEmail) {
+                            return 'Invalid email.';
+                          }
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        hintText: 'onyen@cs.unc.edu',
+                        counterText: '',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: black.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: carolinaBlue.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: Colors.redAccent.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    Gap(15.sp),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      alignment: WrapAlignment.start,
+                      spacing: 5.sp,
+                      runSpacing: 5.sp,
+                      children: buildChips(
+                        researchInterests,
+                        (i) => setState(() => researchInterests =
+                            researchInterests
+                                .where((ele) => ele != i)
+                                .toList()),
+                      ),
+                    ),
+                    Gap(15.sp),
+                    Autocomplete(
+                      fieldViewBuilder: (_, ctr, node, submit) {
+                        researchInterestsCtr = ctr;
+                        return TextField(
+                          enabled: researchInterests.length < 5,
+                          controller: ctr,
+                          focusNode: node,
+                          decoration: InputDecoration(
+                            labelText: 'Research Interests',
+                            counterText: '',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.sp),
+                              borderSide: BorderSide(
+                                color: black.withOpacity(0.6),
+                                width: 1.sp,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.sp),
+                              borderSide: BorderSide(
+                                color: carolinaBlue.withOpacity(0.6),
+                                width: 1.sp,
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.sp),
+                              borderSide: BorderSide(
+                                color: Colors.redAccent.withOpacity(0.6),
+                                width: 1.sp,
+                              ),
+                            ),
+                          ),
+                          onSubmitted: (val) {
+                            if (val != '') {
+                              setState(
+                                () => researchInterests.add(val),
+                              );
+                            } else {
+                              submit();
+                            }
+                            ctr.clear();
+                          },
+                        );
+                      },
+                      optionsBuilder: (val) => ref
+                          .read(facultyProvider.notifier)
+                          .getResearchInterests()
+                          .where(
+                            (ele) => ele.startsWith(val.text),
+                          ),
+                      onSelected: (val) {
+                        setState(
+                          () => researchInterests.add(val),
+                        );
+                        researchInterestsCtr.clear();
+                      },
+                    ),
+                    Gap(15.sp),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      alignment: WrapAlignment.start,
+                      spacing: 5.sp,
+                      runSpacing: 5.sp,
+                      children: buildChips(
+                        courses,
+                        (i) => setState(
+                          () => courses =
+                              courses.where((ele) => ele != i).toList(),
+                        ),
+                      ),
+                    ),
+                    Gap(15.sp),
+                    TextField(
+                      enabled: courses.length < 5,
+                      controller: coursesCtr,
+                      decoration: InputDecoration(
+                        labelText: 'Courses',
+                        counterText: '',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: black.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: carolinaBlue.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: Colors.redAccent.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                      ),
+                      onSubmitted: (val) {
+                        setState(() => courses.add(val.toUpperCase()));
+                        coursesCtr.clear();
+                      },
+                    ),
+                    Gap(15.sp),
+                    TextFormField(
+                      controller: posOpenCtr,
+                      validator: (value) {
+                        if (search) {
+                          return null;
+                        }
+
+                        if (value != null) {
+                          if (value.isEmpty) {
+                            return 'Invalid number.';
+                          }
+                        }
+
+                        if (value != null) {
+                          try {
+                            int.parse(value.toString());
+                          } catch (e) {
+                            return 'Invalid number';
+                          }
+                        }
+
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Positions Open',
+                        hintText: '2',
+                        counterText: '',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: black.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: carolinaBlue.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          borderSide: BorderSide(
+                            color: Colors.redAccent.withOpacity(0.6),
+                            width: 1.sp,
+                          ),
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Material(
+                    color: carolinaBlue,
+                    borderRadius: BorderRadius.circular(15.sp),
+                    child: InkWell(
+                      onTap: loadingAutofill
+                          ? null
+                          : () async {
+                              final bool dataValid =
+                                  formKey.currentState?.validate() ?? false;
+                              if (dataValid) {
+                                setState(() {
+                                  loading = true;
+                                });
+
+                                final newFaculty = FacultyUser(
+                                  firstName: fnCtr.text,
+                                  lastName: lnCtr.text,
+                                  onyen: onyenCtr.text,
+                                  email: emailCtr.text,
+                                  positionsOpen: int.parse(posOpenCtr.text),
+                                  courses: courses,
+                                  researchInterests: researchInterests,
+                                );
+
+                                ApiResponse results;
+                                if (faculty != null) {
+                                  results = await ref
+                                      .read(facultyProvider.notifier)
+                                      .updateList(newFaculty);
+                                } else {
+                                  results = await ref
+                                      .read(facultyProvider.notifier)
+                                      .addToList(newFaculty);
+                                }
+
+                                setState(() {
+                                  loading = false;
+                                });
+
+                                if (results.success) {
+                                  if (ctx.mounted) Navigator.pop(ctx);
+                                } else {
+                                  if (ctx.mounted) {
+                                    errorToast(results.message, ctx);
+                                  }
+                                }
+                              }
+                            },
+                      borderRadius: BorderRadius.circular(15.sp),
+                      child: Container(
+                        width: 130.sp,
+                        height: 60.sp,
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.all(15.sp),
+                        child: AnimatedSwitcher(
+                          duration: 500.milliseconds,
+                          child: loading
+                              ? SizedBox(
+                                  width: 30.sp,
+                                  height: 30.sp,
+                                  child: const CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation(
+                                      white,
+                                    ),
+                                  ),
+                                )
+                              : FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    'Save',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: white,
+                                      fontSize: 30.sp,
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
+              ),
+            ],
           ),
         ),
+      ),
+    ),
   );
 }

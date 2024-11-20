@@ -1,35 +1,56 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:matchwise/core/models/api_response.dart';
 import 'package:matchwise/core/models/important_date.dart';
+import 'package:matchwise/core/utilities/firestore_utils.dart';
 
 final StateNotifierProvider<DateNotifier, List<ImportantDate>> dateProvider =
     StateNotifierProvider(
   (ref) => DateNotifier(
     [],
+    ref,
   ),
 );
 
 class DateNotifier extends StateNotifier<List<ImportantDate>> {
-  DateNotifier(super.state);
+  DateNotifier(
+    super.state,
+    this.ref,
+  );
 
-  Future<void> addToList(ImportantDate user) async {
-    //TODO: Add to firestore
-    state.add(user);
-    state.sort((ob1, ob2) => ob1.date.compareTo(ob2.date));
-    state = [...state];
+  final Ref ref;
+
+  Future<ApiResponse> addToList(ImportantDate date) async {
+    final result = await updateDate(date, ref);
+    if (result.success) {
+      state.add(date);
+      state.sort((ob1, ob2) => ob1.date.compareTo(ob2.date));
+      state = [...state];
+    }
+    return result;
   }
 
-  Future<void> updateInList(ImportantDate user) async {
-    //TODO: Update on firestore
-    state.removeWhere((obj) => obj.id == user.id);
-    state.add(user);
-    state.sort((ob1, ob2) => ob1.date.compareTo(ob2.date));
-    state = [...state];
+  Future<ApiResponse> updateInList(ImportantDate date) async {
+    final result = await updateDate(date, ref);
+
+    if (result.success) {
+      state.removeWhere((obj) => obj.id == date.id);
+      state.add(date);
+      state.sort((ob1, ob2) => ob1.date.compareTo(ob2.date));
+      state = [...state];
+    }
+
+    return result;
   }
 
-  Future<void> removeFromList(ImportantDate user) async {
-    state.removeWhere((obj) => obj.id == user.id);
-    state = [...state];
-    //TODO: Remove from firestore
+  Future<ApiResponse> removeFromList(ImportantDate date) async {
+    final result = await deleteDate(date, ref);
+
+    if (result.success) {
+      state.removeWhere((obj) => obj.id == date.id);
+      state = [...state];
+    }
+
+    return result;
   }
 
   List<ImportantDate> get dates => state;

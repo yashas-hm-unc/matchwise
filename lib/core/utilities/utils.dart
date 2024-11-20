@@ -32,8 +32,6 @@ Future<Widget> initApp(Ref ref, BuildContext context) async {
   await initFirebase();
   await setAppVersion(ref);
   await getMatchingCollection(ref);
-  // createMatches(ref);
-  // createdShortlisted(ref);
   final fireUser = FirebaseAuth.instance.currentUser;
   if (fireUser != null) {
     await initData(ref);
@@ -46,10 +44,9 @@ Future<Widget> initApp(Ref ref, BuildContext context) async {
 Future<void> initData(Ref ref) async {
   final fireUser = FirebaseAuth.instance.currentUser!;
   final user = (await getUserData(ref, fireUser.email!.onyen))!;
-  // print(user.to);
   switch (user.type) {
     case UserType.admin:
-      await getFaculty(ref);
+      await getFaculty(ref, admin: true);
       await getStudents(ref);
       await getMatchedData(ref);
     case UserType.student:
@@ -135,7 +132,7 @@ Future<ApiResponse> autofillData(
 }
 
 Widget buildScreen(int index, MatchWiseUser user) {
-  if(index==10){
+  if (index == 10) {
     return const ProfilePage();
   }
   switch (user.type) {

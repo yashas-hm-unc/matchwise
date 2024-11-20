@@ -33,14 +33,14 @@ class MatchWiseUser {
     required this.type,
     required this.active,
   });
-  
+
   Map<String, dynamic> toJson() => {
-    'firstName': firstName,
-    'lastName': lastName,
-    'onyen': onyen,
-    'email': email,
-    'type': type.toString(),
-  };
+        'firstName': firstName,
+        'lastName': lastName,
+        'onyen': onyen,
+        'email': email,
+        'type': type.toString(),
+      };
 
   factory MatchWiseUser.fromJson(Map<String, dynamic> json) {
     return MatchWiseUser(

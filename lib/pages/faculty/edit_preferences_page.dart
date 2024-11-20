@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -61,7 +59,7 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
                   ),
                 ),
                 Gap(30.sp),
-                TextFormField(
+                TextField(
                   controller: posCtr,
                   decoration: InputDecoration(
                     labelText: 'Positions Open',
@@ -91,7 +89,6 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
                   ),
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => submitForm(),
                 ),
                 Gap(15.sp),
                 Wrap(
@@ -217,7 +214,7 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
               borderRadius: BorderRadius.circular(15.sp),
               color: carolinaBlue,
               child: InkWell(
-                onTap: submitForm,
+                onTap: loading ? null : submitForm,
                 borderRadius: BorderRadius.circular(15.sp),
                 child: Container(
                   width: 130.sp,
@@ -260,14 +257,14 @@ class _EditPreferencesPageState extends ConsumerState<EditPreferencesPage> {
   void submitForm() async {
     try {
       int.parse(posCtr.text);
-    } catch (_) {
-      log(_.toString());
+    } catch (e) {
       return;
     }
 
     setState(() => loading = true);
     user.researchInterests = researchInterests;
     user.positionsOpen = int.parse(posCtr.text);
+    user.active = true;
     final results = await ref.read(userProvider.notifier).update(user);
 
     if (mounted) {

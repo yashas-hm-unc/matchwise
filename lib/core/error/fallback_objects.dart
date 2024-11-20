@@ -1,8 +1,65 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:matchwise/core/constants/app_constants.dart';
 import 'package:matchwise/core/models/faculty_user.dart';
 import 'package:matchwise/core/models/important_date.dart';
 import 'package:matchwise/core/models/student_user.dart';
 import 'package:matchwise/providers/match_provider.dart';
+
+Future<void> initDevData() async {
+  const currentMatching = 'fall_24';
+  final firestore = FirebaseFirestore.instance.collection('dev').doc('dev');
+
+  for (FacultyUser user in facultyFallback) {
+    await firestore
+        .collection(userCollection)
+        .doc(user.onyen)
+        .set(user.toJson());
+  }
+
+  for (StudentUser user in studentsFallback) {
+    await firestore
+        .collection(userCollection)
+        .doc(user.onyen)
+        .set(user.toJson());
+  }
+
+  for (ImportantDate date in importantDatesFallback) {
+    await firestore
+        .collection(matchCollection)
+        .doc(currentMatching)
+        .collection(impDatesCollection)
+        .doc(date.id)
+        .set(date.toJson());
+  }
+
+  await firestore.collection(userCollection).doc('yashashm').set({
+    "firstName": "Yashas",
+    "lastName": "Majmudar",
+    "onyen": "yashashm",
+    "email": "yashashm@cs.unc.edu",
+    "type": "admin"
+  });
+
+  await firestore
+      .collection(matchCollection)
+      .doc(currentMatching)
+      .collection(sortedCollection)
+      .doc('asmith')
+      .set(hiringStages);
+
+  await firestore
+      .collection(matchCollection)
+      .doc(currentMatching)
+      .set(facultyToStudentMatches);
+
+  await firestore.collection(metadataFirestore).doc(metadataFirestore).set(
+    {
+      'current_matching': currentMatching,
+      'previous_matching': [],
+    },
+  );
+}
 
 final List<FacultyUser> facultyFallback = [
   FacultyUser(
@@ -249,29 +306,6 @@ final List<StudentUser> studentsFallback = [
     videoLink: 'https://video.com/btaylor',
   ),
   StudentUser(
-    firstName: 'Chloe',
-    lastName: 'Miller',
-    onyen: 'cmiller',
-    email: 'cmiller@cs.unc.edu',
-    courseTAPref: [
-      'COMP 530',
-      'COMP 575',
-    ],
-    researchInterests: [
-      'Human-Computer Interaction',
-      'Data Mining',
-      'Cybersecurity',
-    ],
-    prefProfessors: [
-      'Michael Johnson',
-      'Laura Moore',
-    ],
-    description:
-        'Interested in HCI, data mining, and cybersecurity, eager to work on impactful projects.',
-    resumeLink: 'https://resume.com/cmiller',
-    videoLink: 'https://video.com/cmiller',
-  ),
-  StudentUser(
     firstName: 'Daniel',
     lastName: 'Young',
     onyen: 'dyoung',
@@ -430,12 +464,26 @@ final List<StudentUser> studentsFallback = [
   ),
 ];
 
-void createdShortlisted(Ref ref){
-  Map<String, List<String>> hiringStages = {
-    'shortlisted': ['agreen', 'btaylor', 'cmiller', 'fking', 'dyoung'],
-    'interviewing': ['agreen', 'jmorgan', 'hevans', 'escott', 'gadams'],
-    'finalized': ['btaylor', 'iperez', 'dyoung', 'jmorgan']
-  };
+Map<String, List<String>> hiringStages = {
+  'shortlisted': ['agreen', 'btaylor', 'fking', 'dyoung'],
+  'interviewing': ['agreen', 'jmorgan', 'hevans', 'escott', 'gadams'],
+  'finalized': ['btaylor', 'iperez', 'dyoung', 'jmorgan']
+};
+
+Map<String, List<String>> facultyToStudentMatches = {
+  'jdoe': ['agreen', 'btaylor', 'dyoung'],
+  'asmith': ['escott', 'gadams', 'hevans'],
+  'mjohnson': ['btaylor', 'fking', 'jmorgan'],
+  'ebrown': ['dyoung', 'agreen', 'escott'],
+  'dwilliams': ['hevans', 'gadams', 'iperez'],
+  'jtaylor': ['fking', 'jmorgan', 'btaylor'],
+  'cmiller': ['agreen', 'dyoung'],
+  'sdavis': ['iperez', 'jmorgan', 'escott'],
+  'dwilson': ['gadams', 'hevans', 'btaylor'],
+  'lmoore': ['agreen', 'dyoung', 'jmorgan']
+};
+
+void createdShortlisted(Ref ref) {
   final matches = <String, List<StudentUser>>{};
   for (var i in hiringStages.keys) {
     matches[i] = studentsFallback
@@ -446,19 +494,6 @@ void createdShortlisted(Ref ref){
 }
 
 void createMatches(Ref ref) {
-  Map<String, List<String>> facultyToStudentMatches = {
-    'jdoe': ['agreen', 'btaylor', 'cmiller', 'dyoung'],
-    'asmith': ['escott', 'gadams', 'hevans'],
-    'mjohnson': ['btaylor', 'fking', 'jmorgan'],
-    'ebrown': ['dyoung', 'agreen', 'escott'],
-    'dwilliams': ['hevans', 'gadams', 'iperez'],
-    'jtaylor': ['fking', 'jmorgan', 'btaylor'],
-    'cmiller': ['cmiller', 'agreen', 'dyoung'],
-    'sdavis': ['iperez', 'jmorgan', 'escott'],
-    'dwilson': ['gadams', 'hevans', 'btaylor', 'cmiller'],
-    'lmoore': ['agreen', 'dyoung', 'jmorgan']
-  };
-
   final matches = <FacultyUser, List<StudentUser>>{};
   for (var i in facultyToStudentMatches.keys) {
     matches[facultyFallback.firstWhere((e) => e.onyen == i)] = studentsFallback

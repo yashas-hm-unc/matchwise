@@ -50,8 +50,11 @@ class ProfileClickableIcon extends ConsumerWidget {
           ),
         ),
         tooltip: 'Profile Menu',
-        onSelected: (selected) =>
-            ref.read(navIndexProvider.notifier).update((_) => selected),
+        onSelected: (selected) {
+          if (selected != settingsPopup.length + 9) {
+            ref.read(navIndexProvider.notifier).update((_) => selected);
+          }
+        },
         position: PopupMenuPosition.under,
         itemBuilder: (BuildContext context) => generateMenu(context),
       ),

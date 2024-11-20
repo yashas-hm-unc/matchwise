@@ -7,8 +7,9 @@ import 'package:matchwise/core/utilities/firestore_utils.dart';
 final StateNotifierProvider<MatchedNotifier,
         Map<FacultyUser, List<StudentUser>>> matchedProvider =
     StateNotifierProvider(
-  (_) => MatchedNotifier(
+  (ref) => MatchedNotifier(
     {},
+    ref,
   ),
 );
 
@@ -22,29 +23,67 @@ final StateNotifierProvider<SortedNotifier, Map<String, List<StudentUser>>>
 
 class MatchedNotifier
     extends StateNotifier<Map<FacultyUser, List<StudentUser>>> {
-  MatchedNotifier(super.state);
+  MatchedNotifier(
+    super.state,
+    this.ref,
+  );
 
-  void updateList(
+  final Ref ref;
+
+  Future<ApiResponse> updateList(
     FacultyUser faculty,
     int oldIndex,
     int newIndex,
-  ) {
-    state[faculty]!.insert(
+  ) async {
+    final list = [...state[faculty]!];
+    list.insert(
       newIndex,
-      state[faculty]!.removeAt(oldIndex),
+      list.removeAt(oldIndex),
     );
+
+    final results = await updateMatchedData(
+      ref,
+      {
+        faculty.onyen: list.map((e) => e.onyen).toList(),
+      },
+    );
+
+    if (results.success) {
+      state[faculty]!.insert(
+        newIndex,
+        state[faculty]!.removeAt(oldIndex),
+      );
+    }
     state = {...state};
+    return results;
   }
 
-  void addToNewList(
+  Future<ApiResponse> addToNewList(
     FacultyUser oldFaculty,
     FacultyUser newFaculty,
     int oldPosition,
     int newPosition,
-  ) {
-    final student = state[oldFaculty]!.removeAt(oldPosition);
-    state[newFaculty]!.insert(newPosition, student);
+  ) async {
+    final oldFac = [...state[oldFaculty]!];
+    final newFac = [...state[newFaculty]!];
+    final student = oldFac.removeAt(oldPosition);
+    newFac.insert(newPosition, student);
+
+    final results = await updateMatchedData(
+      ref,
+      {
+        oldFaculty.onyen: oldFac.map((e) => e.onyen).toList(),
+        newFaculty.onyen: newFac.map((e) => e.onyen).toList(),
+      },
+    );
+
+    if (results.success) {
+      state[oldFaculty]!.remove(student);
+      state[newFaculty]!.insert(newPosition, student);
+    }
+
     state = {...state};
+    return results;
   }
 
   set map(Map<FacultyUser, List<StudentUser>> matched) => state = matched;

@@ -95,7 +95,4 @@ const String matchCollection = 'matching';
 
 const String sortedCollection = 'sorted';
 
-const String matchesCollection = 'matches';
-
 const String impDatesCollection = 'important_dates';
-

@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:matchwise/core/constants/app_colors.dart';
+import 'package:matchwise/core/models/api_response.dart';
 import 'package:matchwise/core/models/important_date.dart';
 import 'package:matchwise/core/utilities/extensions.dart';
+import 'package:matchwise/core/utilities/toast_utils.dart';
 import 'package:matchwise/providers/date_provider.dart';
 import 'package:resize/resize.dart';
 
@@ -113,12 +115,8 @@ class EditTimelinePage extends StatelessWidget {
 }
 
 class DateItem extends StatelessWidget {
-  const DateItem({
-    super.key,
-    required this.date,
-    required this.ref,
-    bool admin = false
-  });
+  const DateItem(
+      {super.key, required this.date, required this.ref, bool admin = false});
 
   final ImportantDate date;
 
@@ -277,9 +275,15 @@ class DateItem extends StatelessWidget {
                     InkWell(
                       onTap: () async {
                         setState(() => loading = true);
-                        await ref.read(dateProvider.notifier).removeFromList(date);
-                        setState(() => loading = false);
+                        final result = await ref
+                            .read(dateProvider.notifier)
+                            .removeFromList(date);
+
+                        if (!result.success && context.mounted) {
+                          errorToast(result.message, context);
+                        }
                         if (ctx.mounted) Navigator.pop(ctx);
+                        setState(() => loading = false);
                       },
                       child: Padding(
                         padding: EdgeInsets.all(10.sp),
@@ -568,17 +572,29 @@ void dateDialog(
                             date: DateFormat('dd MMM yyyy hh:mm aa')
                                 .parse('${dateCtr.text} ${timeCtr.text}'),
                           );
-                          
-                          if(date!=null){
-                            await ref.read(dateProvider.notifier).updateInList(newDate);
-                          }else{
-                            await ref.read(dateProvider.notifier).addToList(newDate);
+                          ApiResponse result;
+
+                          if (date != null) {
+                            result = await ref
+                                .read(dateProvider.notifier)
+                                .updateInList(newDate);
+                          } else {
+                            result = await ref
+                                .read(dateProvider.notifier)
+                                .addToList(newDate);
                           }
 
                           setState(() {
                             loading = false;
                           });
-                          if (ctx.mounted) Navigator.pop(ctx);
+
+                          if (result.success) {
+                            if (ctx.mounted) Navigator.pop(ctx);
+                          } else {
+                            if (ctx.mounted) {
+                              errorToast(result.message, ctx);
+                            }
+                          }
                         }
                       },
                       borderRadius: BorderRadius.circular(15.sp),
