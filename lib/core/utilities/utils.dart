@@ -67,7 +67,6 @@ Future<void> initFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   // await FirebaseAuth.instance.signOut();
 }
 

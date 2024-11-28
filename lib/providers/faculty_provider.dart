@@ -75,6 +75,27 @@ class FacultyNotifier extends StateNotifier<List<FacultyUser>> {
     return list;
   }
 
+  List<Map<String, String>> getProfessorsMap() {
+    final list = <Map<String, String>>[];
+    for (var i in state) {
+      list.add({
+        'name': '${i.firstName} ${i.lastName}',
+        'onyen': i.onyen,
+      });
+    }
+    return list;
+  }
+
+  List<Map<String, String>> getProfMapFromOnyens(List<String> onyens) {
+    return state
+        .where((ele) => onyens.contains(ele.onyen))
+        .map((ele) => {
+              'name': '${ele.firstName} ${ele.lastName}',
+              'onyen': ele.onyen,
+            })
+        .toList();
+  }
+
   set list(List<FacultyUser> users) => state = users;
 
   List<FacultyUser> get list => state;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:matchwise/core/constants/app_colors.dart';
@@ -29,7 +30,7 @@ class _StudentFormPageState extends ConsumerState<StudentFormPage> {
   bool loading = false;
   List<String> researchInterests = [];
   List<String> taPref = [];
-  List<String> profPref = [];
+  List<Map<String, String>> profPref = [];
 
   @override
   void initState() {
@@ -40,7 +41,9 @@ class _StudentFormPageState extends ConsumerState<StudentFormPage> {
     resumeLinkCtr.text = user.resumeLink;
     researchInterests = user.researchInterests;
     taPref = user.courseTAPref;
-    profPref = user.prefProfessors;
+    profPref = ref
+        .read(facultyProvider.notifier)
+        .getProfMapFromOnyens(user.prefProfessors);
 
     super.initState();
   }
@@ -305,7 +308,7 @@ class _StudentFormPageState extends ConsumerState<StudentFormPage> {
                             alignment: WrapAlignment.start,
                             spacing: 5.sp,
                             runSpacing: 5.sp,
-                            children: buildChips(
+                            children: buildPrefProfChips(
                               profPref,
                               (i) => setState(() => profPref =
                                   profPref.where((ele) => ele != i).toList()),
@@ -348,10 +351,11 @@ class _StudentFormPageState extends ConsumerState<StudentFormPage> {
                             },
                             optionsBuilder: (val) => ref
                                 .read(facultyProvider.notifier)
-                                .getProfessors()
+                                .getProfessorsMap()
                                 .where(
-                                  (ele) => ele.startsWith(val.text),
+                                  (ele) => ele['name']!.startsWith(val.text),
                                 ),
+                            displayStringForOption: (map) => map['name']!,
                             onSelected: (val) {
                               setState(() => profPref.add(val));
                               profPrefCtr.clear();
@@ -381,7 +385,9 @@ class _StudentFormPageState extends ConsumerState<StudentFormPage> {
                         user.videoLink = videoLinkCtr.text;
                         user.resumeLink = resumeLinkCtr.text;
                         user.courseTAPref = taPref;
-                        user.prefProfessors = profPref;
+                        user.prefProfessors = profPref
+                            .map((ele) => ele['onyen'].toString())
+                            .toList();
                         user.researchInterests = researchInterests;
 
                         final results =
@@ -450,6 +456,36 @@ class _StudentFormPageState extends ConsumerState<StudentFormPage> {
           backgroundColor: carolinaBlue,
           label: Text(
             i,
+            style: const TextStyle(
+              color: white,
+            ),
+          ),
+          padding: EdgeInsets.symmetric(
+            vertical: 5.sp,
+            horizontal: 8.sp,
+          ),
+        ),
+      );
+    }
+
+    return list;
+  }
+
+  List<Chip> buildPrefProfChips(
+    List<Map<String, String>> value,
+    Function(Map<String, String>) onDelete,
+  ) {
+    final list = <Chip>[];
+
+    list.clear();
+    for (Map<String, String> i in value) {
+      list.add(
+        Chip(
+          onDeleted: () => onDelete(i),
+          deleteIconColor: white,
+          backgroundColor: carolinaBlue,
+          label: Text(
+            i['name']!,
             style: const TextStyle(
               color: white,
             ),
