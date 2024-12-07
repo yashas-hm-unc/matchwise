@@ -21,7 +21,6 @@ import 'package:matchwise/pages/faculty/dashboard_page.dart';
 import 'package:matchwise/pages/faculty/edit_preferences_page.dart';
 import 'package:matchwise/pages/important_dates_page.dart';
 import 'package:matchwise/pages/profile_page.dart';
-import 'package:matchwise/pages/student/dashboard_page.dart';
 import 'package:matchwise/pages/student/form_page.dart';
 import 'package:matchwise/providers/common_providers.dart';
 import 'package:matchwise/screens/home_screen.dart';
@@ -149,11 +148,11 @@ Widget buildScreen(int index, MatchWiseUser user) {
       break;
     case UserType.student:
       switch (index) {
+        // case 0:
+        //   return const StudentDashboard();
         case 0:
-          return const StudentDashboard();
-        case 1:
           return const ImportantDatesPage();
-        case 2:
+        case 1:
           return const StudentFormPage();
       }
       break;

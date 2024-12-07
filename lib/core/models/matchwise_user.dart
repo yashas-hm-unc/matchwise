@@ -9,7 +9,7 @@ enum UserType {
   String toString() => name.replaceAll('Subscription.', kEmptyString);
 
   static UserType fromString(String value) =>
-      UserType.values.firstWhere((element) => element.toString() == value);
+      UserType.values.byName(value);
 }
 
 class MatchWiseUser {

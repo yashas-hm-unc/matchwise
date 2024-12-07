@@ -23,7 +23,7 @@ final List<String> facultyNavIcons = [
 ];
 
 final List<String> studentNavigation = [
-  'Dashboard',
+  // 'Dashboard',
   'Important Dates',
   'Matching Form'
 ];

@@ -108,7 +108,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   setState(() => loading = true);
                                   // await googleSignIn();
                                   final result = await debugSignin(
-                                    type: UserType.student,
+                                    type: UserType.admin,
                                   );
                                   await ref.read(
                                       FutureProvider((ref) => initData(ref))
