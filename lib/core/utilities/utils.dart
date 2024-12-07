@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:csv/csv.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fuzzy/fuzzy.dart';
@@ -107,8 +110,8 @@ Future<ApiResponse> autofillData(
   try {
     final response =
         await FirebaseFunctions.instance.httpsCallable('proxy_cors').call({
-          "url": "https://dir.unc.edu/api/search/$onyen",
-        });
+      "url": "https://dir.unc.edu/api/search/$onyen",
+    });
     if ((response.data as List).isEmpty) {
       return const ApiResponse();
     }
@@ -244,4 +247,21 @@ List<String> fuzzySearch(
   String query,
 ) {
   return Fuzzy(list).search(query).map((e) => e.item).toList();
+}
+
+Future<void> downloadCSV(Map<String, List<String>> data, String name) async {
+  List<List<String>> csvData = [];
+
+  for (String i in data.keys) {
+    List<String> list = [i, ...(data[i]!)];
+    csvData.add(list);
+  }
+
+  final csv = const ListToCsvConverter().convert(csvData);
+  await FileSaver.instance.saveFile(
+    name: name,
+    bytes: Uint8List.fromList(csv.codeUnits),
+    ext: '.csv',
+    mimeType: MimeType.csv,
+  );
 }

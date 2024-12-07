@@ -106,7 +106,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ? null
                               : () async {
                                   setState(() => loading = true);
-                                  // await googleSignIn();
+                                  // final result = await googleSignIn();
                                   final result = await debugSignin(
                                     type: UserType.admin,
                                   );

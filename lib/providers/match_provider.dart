@@ -86,6 +86,9 @@ class MatchedNotifier
     return results;
   }
 
+  Map<String, List<String>> get downloadableData => state
+      .map((k, v) => MapEntry(k.fullName, v.map((e) => e.fullName).toList()));
+
   set map(Map<FacultyUser, List<StudentUser>> matched) => state = matched;
 
   Map<FacultyUser, List<StudentUser>> get map => state;

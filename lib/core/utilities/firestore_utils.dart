@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchwise/core/constants/app_constants.dart';
 import 'package:matchwise/core/models/api_response.dart';
@@ -18,10 +17,7 @@ import 'package:matchwise/providers/student_provider.dart';
 import 'package:matchwise/providers/user_provider.dart';
 
 Future<void> getMatchingCollection(Ref ref) async {
-  dynamic firestore = FirebaseFirestore.instance;
-  if (kDebugMode) {
-    firestore = firestore.collection('dev').doc('dev');
-  }
+  final firestore = FirebaseFirestore.instance;
   final result = await firestore
       .collection(metadataFirestore)
       .doc(metadataFirestore)
@@ -42,10 +38,7 @@ Future<void> getFaculty(
   Ref ref, {
   bool admin = false,
 }) async {
-  dynamic firestore = FirebaseFirestore.instance;
-  if (kDebugMode) {
-    firestore = firestore.collection('dev').doc('dev');
-  }
+  final firestore = FirebaseFirestore.instance;
 
   QuerySnapshot<Map<String, dynamic>> result;
 
@@ -84,10 +77,7 @@ Future<void> getFaculty(
 
 Future<ApiResponse> updateFaculty(FacultyUser user) async {
   try {
-    dynamic firestore = FirebaseFirestore.instance;
-    if (kDebugMode) {
-      firestore = firestore.collection('dev').doc('dev');
-    }
+    final firestore = FirebaseFirestore.instance;
 
     await firestore
         .collection(userCollection)
@@ -108,11 +98,7 @@ Future<ApiResponse> updateFaculty(FacultyUser user) async {
 
 Future<ApiResponse> deleteFaculty(FacultyUser user) async {
   try {
-    dynamic firestore = FirebaseFirestore.instance;
-    if (kDebugMode) {
-      firestore = firestore.collection('dev').doc('dev');
-    }
-
+    final firestore = FirebaseFirestore.instance;
     await firestore.collection(userCollection).doc(user.onyen).delete();
 
     return const ApiResponse(success: true);
@@ -129,10 +115,7 @@ Future<ApiResponse> deleteFaculty(FacultyUser user) async {
 
 // INFO: Students
 Future<void> getStudents(Ref ref) async {
-  dynamic firestore = FirebaseFirestore.instance;
-  if (kDebugMode) {
-    firestore = firestore.collection('dev').doc('dev');
-  }
+  final firestore = FirebaseFirestore.instance;
 
   final result = await firestore
       .collection(userCollection)
@@ -159,10 +142,7 @@ Future<void> getStudents(Ref ref) async {
 
 // INFO: Match
 Future<void> getMatchedData(Ref ref) async {
-  dynamic firestore = FirebaseFirestore.instance;
-  if (kDebugMode) {
-    firestore = firestore.collection('dev').doc('dev');
-  }
+  final firestore = FirebaseFirestore.instance;
   final matchDocument = ref.read(currMatchProvider);
   final results =
       await firestore.collection(matchCollection).doc(matchDocument).get();
@@ -189,10 +169,7 @@ Future<ApiResponse> updateMatchedData(
   Map<String, List<String>> updateMap,
 ) async {
   try {
-    dynamic firestore = FirebaseFirestore.instance;
-    if (kDebugMode) {
-      firestore = firestore.collection('dev').doc('dev');
-    }
+    final firestore = FirebaseFirestore.instance;
     final matchDocument = ref.read(currMatchProvider);
     await firestore
         .collection(matchCollection)
@@ -215,10 +192,7 @@ Future<ApiResponse> updateMatchedData(
 
 // INFO: Important Dates
 Future<void> getImportantDates(Ref ref) async {
-  dynamic firestore = FirebaseFirestore.instance;
-  if (kDebugMode) {
-    firestore = firestore.collection('dev').doc('dev');
-  }
+  final firestore = FirebaseFirestore.instance;
   final match = ref.read(currMatchProvider);
   final results = await firestore
       .collection(matchCollection)
@@ -238,17 +212,14 @@ Future<ApiResponse> updateDate(
   Ref ref,
 ) async {
   try {
-    dynamic firestore = FirebaseFirestore.instance;
-    if (kDebugMode) {
-      firestore = firestore.collection('dev').doc('dev');
-    }
+    final firestore = FirebaseFirestore.instance;
     final matchField = ref.read(currMatchProvider);
     await firestore
         .collection(matchCollection)
         .doc(matchField)
         .collection(impDatesCollection)
         .doc(date.id)
-        .set();
+        .set(date.toJson());
 
     return const ApiResponse(success: true);
   } catch (e, s) {
@@ -266,10 +237,7 @@ Future<ApiResponse> deleteDate(
   Ref ref,
 ) async {
   try {
-    dynamic firestore = FirebaseFirestore.instance;
-    if (kDebugMode) {
-      firestore = firestore.collection('dev').doc('dev');
-    }
+    final firestore = FirebaseFirestore.instance;
     final matchField = ref.read(currMatchProvider);
     await firestore
         .collection(matchCollection)
@@ -294,10 +262,7 @@ Future<MatchWiseUser?> getUserData(
   Ref ref,
   String onyen,
 ) async {
-  dynamic firestore = FirebaseFirestore.instance;
-  if (kDebugMode) {
-    firestore = firestore.collection('dev').doc('dev');
-  }
+  final firestore = FirebaseFirestore.instance;
   final results = await firestore.collection(userCollection).doc(onyen).get();
   if (results.exists && results.data() != null) {
     MatchWiseUser user;
@@ -326,16 +291,12 @@ Future<MatchWiseUser?> getUserData(
   }
   return null;
 }
-// --web-browser-flag "--disable-web-security"
+
 Future<ApiResponse> updateProfile(
   MatchWiseUser user,
 ) async {
   try {
-    dynamic firestore = FirebaseFirestore.instance;
-
-    if (kDebugMode) {
-      firestore = firestore.collection('dev').doc('dev');
-    }
+    final firestore = FirebaseFirestore.instance;
 
     await firestore
         .collection(userCollection)
@@ -359,11 +320,7 @@ Future<ApiResponse> updateSortedData(
   Ref ref,
 ) async {
   try {
-    dynamic firestore = FirebaseFirestore.instance;
-
-    if (kDebugMode) {
-      firestore = firestore.collection('dev').doc('dev');
-    }
+    final firestore = FirebaseFirestore.instance;
     final matchField = ref.read(currMatchProvider);
     final onyen = ref.read(userProvider).onyen;
 
@@ -391,11 +348,59 @@ Future<ApiResponse> updateSortedData(
   return const ApiResponse();
 }
 
-Future<void> getSortedData(Ref ref) async {
-  dynamic firestore = FirebaseFirestore.instance;
-  if (kDebugMode) {
-    firestore = firestore.collection('dev').doc('dev');
+Future<ApiResponse> getAllSortedData(WidgetRef ref) async {
+  try {
+    final firestore = FirebaseFirestore.instance;
+    final matchDoc = ref.read(currMatchProvider);
+    final data = await firestore
+        .collection(matchCollection)
+        .doc(matchDoc)
+        .collection(sortedCollection)
+        .get();
+    if (data.docs.isNotEmpty) {
+      String profByOnyen(String onyen) {
+        return ref
+            .read(facultyProvider)
+            .firstWhere((e) => e.onyen == onyen)
+            .fullName;
+      }
+
+      String studentByOnyen(String onyen) {
+        return ref
+            .read(studentProvider)
+            .firstWhere((e) => e.onyen == onyen)
+            .fullName;
+      }
+
+      Map<String, List<String>> sortedData = {};
+      for (var doc in data.docs) {
+        sortedData[profByOnyen(doc.id)] = (doc.data()['shortlisted'] as List)
+            .map((e) => studentByOnyen(e.toString())).toList();
+      }
+      
+      return ApiResponse(
+        success: true,
+        args: {
+          'data': sortedData,
+        },
+      );
+    } else {
+      return const ApiResponse(
+          success: false, message: 'No sorting data available');
+    }
+  } catch (e, s) {
+    log(
+      'Error @ Get all sorted data',
+      error: e,
+      stackTrace: s,
+    );
   }
+
+  return const ApiResponse();
+}
+
+Future<void> getSortedData(Ref ref) async {
+  final firestore = FirebaseFirestore.instance;
   final matchDocument = ref.read(currMatchProvider);
   final FacultyUser user = ref.read(userProvider) as FacultyUser;
   final results = await firestore
@@ -423,10 +428,7 @@ Future<ApiResponse> createNewSession(
 ) async {
   try {
     newMatching = newMatching.replaceAll(' ', '_').toLowerCase();
-    dynamic firestore = FirebaseFirestore.instance;
-    if (kDebugMode) {
-      firestore = firestore.collection('dev').doc('dev');
-    }
+    final firestore = FirebaseFirestore.instance;
     final matchDoc = ref.read(currMatchProvider);
     final users = await firestore
         .collection(userCollection)

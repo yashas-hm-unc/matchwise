@@ -52,4 +52,6 @@ class MatchWiseUser {
       type: UserType.admin,
     );
   }
+  
+  String get fullName => '$firstName $lastName';
 }

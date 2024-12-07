@@ -8,7 +8,7 @@ import 'package:matchwise/providers/match_provider.dart';
 
 Future<void> initDevData() async {
   const currentMatching = 'fall_24';
-  final firestore = FirebaseFirestore.instance.collection('dev').doc('dev');
+  final firestore = FirebaseFirestore.instance;
 
   for (FacultyUser user in facultyFallback) {
     await firestore
