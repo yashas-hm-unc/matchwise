@@ -326,7 +326,7 @@ Future<MatchWiseUser?> getUserData(
   }
   return null;
 }
-
+// --web-browser-flag "--disable-web-security"
 Future<ApiResponse> updateProfile(
   MatchWiseUser user,
 ) async {

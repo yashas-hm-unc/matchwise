@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:dio/dio.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -71,22 +71,26 @@ Future<void> initFirebase() async {
 
 Future<ApiResponse> autofillFacultyForm(String onyen) async {
   try {
-    final dio = Dio();
-    final url = 'https://dir.unc.edu/api/search/$onyen';
-
-    final response = await dio.get(url);
+    final response =
+        await FirebaseFunctions.instance.httpsCallable('proxy_cors').call({
+      "url": "https://dir.unc.edu/api/search/$onyen",
+    });
+    if ((response.data as List).isEmpty) {
+      return const ApiResponse();
+    }
     final data = response.data[0];
     return ApiResponse(
       success: true,
       args: {
         'faculty': FacultyUser(
           onyen: onyen,
-          firstName: data['givenNameIterator'][0],
-          lastName: data['snIterator'][0],
-          email: data['mailIterator'][0].toString().replaceAll(
+          firstName: data['givenNameIterator'][0] ?? '',
+          lastName: data['snIterator'][0] ?? '',
+          email: data['mailIterator'][0]?.replaceAll(
                 'unc.edu',
                 'cs.unc.edu',
-              ),
+              ) ??
+              '',
         )
       },
     );
@@ -101,22 +105,26 @@ Future<ApiResponse> autofillData(
   String onyen,
 ) async {
   try {
-    final dio = Dio();
-    final url = 'https://dir.unc.edu/api/search/$onyen';
-
-    final response = await dio.get(url);
+    final response =
+        await FirebaseFunctions.instance.httpsCallable('proxy_cors').call({
+          "url": "https://dir.unc.edu/api/search/$onyen",
+        });
+    if ((response.data as List).isEmpty) {
+      return const ApiResponse();
+    }
     final data = response.data[0];
     return ApiResponse(
       success: true,
       args: {
         'data': MatchWiseUser(
           onyen: onyen,
-          firstName: data['givenNameIterator'][0],
-          lastName: data['snIterator'][0],
-          email: data['mailIterator'][0].toString().replaceAll(
+          firstName: data['givenNameIterator'][0] ?? '',
+          lastName: data['snIterator'][0] ?? '',
+          email: data['mailIterator'][0]?.replaceAll(
                 'unc.edu',
                 'cs.unc.edu',
-              ),
+              ) ??
+              '',
           type: UserType.student,
           active: true,
         ),
