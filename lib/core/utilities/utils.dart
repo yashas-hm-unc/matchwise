@@ -252,6 +252,19 @@ List<String> fuzzySearch(
 Future<void> downloadCSV(Map<String, List<String>> data, String name) async {
   List<List<String>> csvData = [];
 
+  int maxLength = 0;
+  for (var key in data.keys) {
+    if (maxLength < data[key]!.length) {
+      maxLength = data[key]!.length;
+    }
+  }
+  final r1 = ['Faculty'];
+  for (int i = 1; i <= maxLength; i++) {
+    r1.add('Student $i');
+  }
+
+  csvData.add(r1);
+
   for (String i in data.keys) {
     List<String> list = [i, ...(data[i]!)];
     csvData.add(list);
